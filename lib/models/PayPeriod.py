@@ -1,4 +1,5 @@
 from models.__init__ import CURSOR, CONN
+from models.shift import Shift
 from datetime import date
 
 
