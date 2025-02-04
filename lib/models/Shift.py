@@ -2,14 +2,14 @@ from models.__init__ import CURSOR, CONN
 from datetime import datetime
 
 class Shift:
-    def __init__(self, date, clock_in, clock_out, cc_tips, cash_tips, payperiod_id, id=None):
+    def __init__(self, date, clock_in, clock_out, cc_tips, cash_tips, payperiod_id=None, id=None):
         self.id = id
         self.date = date
         self.clock_in = clock_in
         self.clock_out = clock_out
         self.cc_tips = cc_tips
         self.cash_tips = cash_tips
-        self._payperiod_id = None
+        self.payperiod_id = payperiod_id
 
     @property
     def date(self):
@@ -58,4 +58,15 @@ class Shift:
     @cash_tips.setter
     def cash_tips(self, cash_tips):
         # assigns cash tip value
+        pass
+
+    @property
+    def payperiod_id(self):
+        return self._payperiod_id
+
+    @payperiod_id.setter
+    def payperiod_id(self, payperiod_id):
+        #checks PayPeriods to see if a pay period exists for the date
+        #if it does - assigns pay period id accordingly
+        # if it doesnt - calls fn to create a payperiod which will then be assigned to it
         pass
