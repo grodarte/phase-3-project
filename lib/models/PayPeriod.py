@@ -1,5 +1,5 @@
-from datetime import date
 from models.__init__ import CURSOR, CONN
+from datetime import date
 
 
 class PayPeriod:
@@ -37,9 +37,21 @@ class PayPeriod:
         try:
             new_end_date = date(year, month, day)
             if self._start_date and new_end_date < self._start_date:
-                raise ValueError("Start date cannot be after the end date.")
+                raise ValueError("End date cannot be before the start date.")
             self._end_date = new_end_date
         except ValueError as e:
             print(f'Invalid end date: {e}')
+
+    @classmethod
+    def create_table(cls):
+        """ Create a new table to persist the attributes of the PayPeriod instances """
+        sql = """
+            CREATE TABLE IF NOT EXISTS payperiods (
+            id INTEGER PRIMARY KEY,
+            start_date TEXT,
+            end_date TEXT)
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
 
 breakpoint()
