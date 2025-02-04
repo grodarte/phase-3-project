@@ -21,6 +21,7 @@ class PayPeriod:
         return self._start_date
 
     def set_start_date(self, month, day, year):
+        """ Uses Date class to create instance for start date """
         try:
             new_start_date = date(year, month, day)
             if self._end_date and new_start_date > self._end_date:
@@ -34,6 +35,7 @@ class PayPeriod:
         return self._end_date
 
     def set_end_date(self, month, day, year):
+        """ Uses Date class to create instance for end date """
         try:
             new_end_date = date(year, month, day)
             if self._start_date and new_end_date < self._start_date:
@@ -54,4 +56,13 @@ class PayPeriod:
         CURSOR.execute(sql)
         CONN.commit()
 
+    @classmethod
+    def drop_table(cls):
+        """ Drop the table that persists the attributes of PayPeriod instances """
+        sql = """
+            DROP TABLE IF EXISTS payperiods
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+        
 breakpoint()
