@@ -2,7 +2,8 @@
 
 from helpers import (
     exit_program,
-    helper_1
+    create_shift,
+    assign_pay_period
 )
 
 def main_menu():
@@ -22,7 +23,8 @@ def main_menu():
         choice = int(input(">>> "))
         
         if choice == 1:
-            pass
+            create_shift()
+            assign_pay_period()
             # helper fn to add a new shift (dont ~need pay pd~)
             # helper fn that checks if a pay period exists
             # prompts to submit a pay period for the new shift? 

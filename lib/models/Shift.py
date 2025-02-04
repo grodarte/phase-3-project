@@ -1,3 +1,61 @@
+from models.__init__ import CURSOR, CONN
+from datetime import datetime
+
 class Shift:
-    def __init__(self):
+    def __init__(self, date, clock_in, clock_out, cc_tips, cash_tips, payperiod_id, id=None):
+        self.id = id
+        self.date = date
+        self.clock_in = clock_in
+        self.clock_out = clock_out
+        self.cc_tips = cc_tips
+        self.cash_tips = cash_tips
+        self._payperiod_id = None
+
+    @property
+    def date(self):
+        return self._date
+
+    @date.setter
+    def date(self, date):
+        # use date time to assign proper date
+        pass
+
+    @property
+    def clock_in(self):
+        # returns the clock in date time
+        pass 
+
+    @clock_in.setter
+    def clock_in(self, clock_in):
+        # use date time to assign proper time
+        pass
+
+    @property
+    def clock_out(self):
+        # returns the clock out date time
+        pass 
+
+    @clock_out.setter
+    def clock_out(self, clock_out):
+        # use date time to assign proper time
+        pass
+
+    @property
+    def cc_tips(self):
+        # returns the tips
+        pass 
+
+    @cc_tips.setter
+    def cc_tips(self, cc_tips):
+        # assigns tip value for cc
+        pass
+
+    @property
+    def cash_tips(self):
+        # returns the cash tips
+        pass 
+
+    @cash_tips.setter
+    def cash_tips(self, cash_tips):
+        # assigns cash tip value
         pass
