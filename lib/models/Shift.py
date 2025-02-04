@@ -18,14 +18,13 @@ class Shift:
 
     @date.setter
     def date(self, date):
-        ''' expects date in format: D/M/YYYY'''
+        ''' expects date in format: D/M/YYYY '''
         # use date time to assign proper date
         pass
 
     @property
     def clock_in(self):
-        # returns the clock in date time
-        pass 
+        return self._clock_in
 
     @clock_in.setter
     def clock_in(self, clock_in):
@@ -34,8 +33,7 @@ class Shift:
 
     @property
     def clock_out(self):
-        # returns the clock out date time
-        pass 
+        return self._clock_in
 
     @clock_out.setter
     def clock_out(self, clock_out):
@@ -44,8 +42,7 @@ class Shift:
 
     @property
     def cc_tips(self):
-        # returns the tips
-        pass 
+        return self.cc_tips
 
     @cc_tips.setter
     def cc_tips(self, cc_tips):
@@ -54,8 +51,7 @@ class Shift:
 
     @property
     def cash_tips(self):
-        # returns the cash tips
-        pass 
+        return self._cash_tips
 
     @cash_tips.setter
     def cash_tips(self, cash_tips):
