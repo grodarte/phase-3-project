@@ -66,5 +66,5 @@ class Shift:
     def payperiod_id(self, payperiod_id):
         #checks PayPeriods to see if a pay period exists for the date
         #if it does - assigns pay period id accordingly
-        # if it doesnt - calls fn to create a payperiod which will then be assigned to it
+        # if it doesnt - uses inputs to create a payperiod which will then be assigned to it
         pass

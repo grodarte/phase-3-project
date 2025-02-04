@@ -3,7 +3,7 @@
 from helpers import (
     exit_program,
     create_shift,
-    assign_pay_period
+    view_all_shifts
 )
 
 def main_menu():
@@ -24,16 +24,8 @@ def main_menu():
         
         if choice == 1:
             create_shift()
-            assign_pay_period()
-            # helper fn to add a new shift (dont ~need pay pd~)
-            # helper fn that checks if a pay period exists
-            # prompts to submit a pay period for the new shift?
         elif choice == 2:
-            pass
-            # view shifts menu
-            # view all
-            # view shifts by pay period
-            # view shifts by date range
+            shifts_menu()
         elif choice == 3:
             pass
             # calculate earnings by pay period
@@ -45,7 +37,7 @@ def main_menu():
 
     exit_program()
 
-def view_shifts_menu():
+def shifts_menu():
     ''' Menu for viewing past shifts '''
 
     choice = 0
@@ -60,16 +52,15 @@ def view_shifts_menu():
         choice = int(input(">>> "))
 
         if choice == 1:
-            pass
+            view_all_shifts()
             # should they be able to select a shift? 
-            # helper fn that fetches all shifts and displays them
             # options to view more? 
+
         elif choice == 2:
-            pass
-            # most recent pay period
-            # enter date or pay period number to display more details
+            view_shifts_in_payperiod()
+
         elif choice == 3:
-            pass
+            view_shifts_in_date_range()
             # helper fn - enter start and end date to display
         elif choice == 4:
             break
