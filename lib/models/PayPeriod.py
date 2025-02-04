@@ -20,6 +20,7 @@ class PayPeriod:
 
     @start_date.setter
     def start_date(self, start_date):
+        ''' Expects date in format: D/M/YYYY '''
         #uses date time to properly assign date
         pass
 
@@ -29,6 +30,7 @@ class PayPeriod:
 
     @end_date.setter
     def end_date(self, end_date):
+        ''' Expects date in format: D/M/YYYY '''
         # uses date time to properly assign date
         pass
 

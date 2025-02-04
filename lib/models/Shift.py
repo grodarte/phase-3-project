@@ -17,6 +17,7 @@ class Shift:
 
     @date.setter
     def date(self, date):
+        ''' expects date in format: D/M/YYYY'''
         # use date time to assign proper date
         pass
 

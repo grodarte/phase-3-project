@@ -27,7 +27,7 @@ def main_menu():
             assign_pay_period()
             # helper fn to add a new shift (dont ~need pay pd~)
             # helper fn that checks if a pay period exists
-            # prompts to submit a pay period for the new shift? 
+            # prompts to submit a pay period for the new shift?
         elif choice == 2:
             pass
             # view shifts menu
