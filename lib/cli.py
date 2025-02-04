@@ -4,6 +4,9 @@ from helpers import (
     exit_program,
     create_shift,
     view_all_shifts
+    view_shifts_in_payperiod,
+    view_shifts_in_date_range,
+    earnings_by_payperiod
 )
 
 def main_menu():
@@ -24,18 +27,21 @@ def main_menu():
         
         if choice == 1:
             create_shift()
+
         elif choice == 2:
             shifts_menu()
+
         elif choice == 3:
-            pass
-            # calculate earnings by pay period
-            # calculate earnings by date range
+            earnings_menu()
+
         elif choice == 4:
             break
+
         else:
             print("Invalid choice. Please enter a number from 1-4")
 
     exit_program()
+
 
 def shifts_menu():
     ''' Menu for viewing past shifts '''
@@ -55,6 +61,7 @@ def shifts_menu():
             view_all_shifts()
             # should they be able to select a shift? 
             # options to view more? 
+            # option to select a shift - edit, calculate something, delete
 
         elif choice == 2:
             view_shifts_in_payperiod()
@@ -69,8 +76,30 @@ def shifts_menu():
     
     main_menu()
 
-    
+def earnings_menu():
+    ''' Menu for calculating earnings '''
 
+    choice = 0
+    while choice != 3:
+
+        print("***CALCULATE EARNINGS***")
+        print("1 - CALCULATE EARNINGS BY PAY PERIOD")
+        print("2 - CALCULATE EARNINGS BY DATE RANGE")
+        print("3 - BACK TO MAIN MENU")
+
+        choice = int(input(">>> "))
+
+        if choice == 1:
+            earnings_by_payperiod()
+
+        elif choice == 2:
+            earnings_in_date_range()
+
+        elif choice == 3:
+            break
+
+        else:
+            print("Invalid choice. Please enter a number from 1-3")
 
 if __name__ == "__main__":
     main_menu()
