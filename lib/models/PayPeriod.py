@@ -4,7 +4,7 @@ from datetime import datetime
 
 class PayPeriod:
     
-    all = []
+    all = {}
 
     def __init__(self, start_date, end_date, id=None):
         self.id = id
@@ -54,8 +54,8 @@ class PayPeriod:
         sql = '''
             CREATE TABLE IF NOT EXISTS payperiods (
             id INT PRIMARY KEY,
-            start_date STRING,
-            end_date STRING
+            start_date TEXT,
+            end_date TEXT
             );
         '''
 
@@ -71,5 +71,20 @@ class PayPeriod:
 
         CURSOR.execute(sql)
         CONN.commit()
-        
+
+    def save(self):
+        ''' Inserts a new row with the start and end date values of the current PayPeriod instance.
+            Update object id attribute using the primary key value of the new row.
+            Save the object in local dictionary using table row's PK as dictionary key '''
+        sql = '''
+            INSERT INTO payperiods(id, start_date, end_date)
+            VALUES(?, ?, ?);
+        '''
+
+        CURSOR.execute(sql, (self.start_date, self.end_date))
+        CONN.commit()
+
+        self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
+
 breakpoint()
