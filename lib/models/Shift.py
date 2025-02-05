@@ -20,6 +20,7 @@ class Shift:
     def date(self, date):
         ''' expects date in format: D/M/YYYY '''
         # use date time to assign proper date
+        
         pass
 
     @property

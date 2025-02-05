@@ -1,6 +1,5 @@
 from models.__init__ import CURSOR, CONN
-from models.shift import Shift
-from datetime import date
+from datetime import datetime
 
 
 class PayPeriod:
@@ -21,9 +20,16 @@ class PayPeriod:
 
     @start_date.setter
     def start_date(self, start_date):
-        ''' Expects date in format: D/M/YYYY '''
+        ''' Expects date in format: MM/DD/YY '''
         #uses date time to properly assign date
-        pass
+        try:
+            date_obj = datetime.strptime(f'start_date', "%m/%d/%y")
+
+            formatted_date = date_obj.strftime("%m-%d-%y")
+
+            print(formatted_date)
+        except ValueError:
+            print("Invalid date format. Please enter the date as MM/DD/YY.")
 
     @property
     def end_date(self):
@@ -31,10 +37,39 @@ class PayPeriod:
 
     @end_date.setter
     def end_date(self, end_date):
-        ''' Expects date in format: D/M/YYYY '''
+        ''' Expects date in format: MM/DD/YY '''
         # uses date time to properly assign date
-        pass
+        try:
+            date_obj = datetime.strptime(f'end_date', "%m/%d/%y")
 
+            formatted_date = date_obj.strftime("%m-%d-%y")
 
+            print(formatted_date)
+        except ValueError:
+            print("Invalid date format. Please enter the date as MM/DD/YY.")
+
+    @classmethod
+    def create_table(cls):
+        ''' Create a new table to persist the attributes of PayPeriod instances '''
+        sql = '''
+            CREATE TABLE IF NOT EXISTS payperiods (
+            id INT PRIMARY KEY,
+            start_date STRING,
+            end_date STRING
+            );
+        '''
+
+        CURSOR.execute(sql)
+        CONN.commit()
+
+    @classmethod
+    def drop_table(cls):
+        ''' Drop the table that persists PayPeriod instances '''
+        sql = '''
+            DROP TABLE IF EXISTS payperiods
+        '''
+
+        CURSOR.execute(sql)
+        CONN.commit()
         
 breakpoint()

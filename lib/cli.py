@@ -65,6 +65,7 @@ def shifts_menu():
 
         elif choice == 2:
             view_shifts_in_payperiod()
+            # can add, edit, delete, or view more info for shift
 
         elif choice == 3:
             view_shifts_in_date_range()
@@ -104,8 +105,6 @@ def earnings_menu():
 if __name__ == "__main__":
     main_menu()
 
-# add multiple layered loops
-#NAME
 ## PAY PERIOD
 # go into a particular pay period which will show existing shifts
 # within the pay period you can delete it, add a new shift, or view more details... total hours, total tips, wage, hourly wage(w tips), avg tipout, id for existing shift...
