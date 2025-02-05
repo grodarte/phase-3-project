@@ -9,5 +9,7 @@ def reset_database():
     PayPeriod.drop_table()
     PayPeriod.create_table()
 
+    
+
 reset_database()
 breakpoint()
