@@ -87,6 +87,31 @@ class PayPeriod:
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
+    def update(self):
+        ''' Update the table row corresponding to the current PayPeriod instance '''
+        sql = '''
+            UPDATE payperiods
+            SET start_date = ?, end_date = ?
+            WHERE id = ?;
+        '''
+        CURSOR.execute(sql, (self.start_date, self.end_date, self.id))
+        CONN.commit()
+
+    def delete(self):
+        '''Delete the table row corresponding to the current PayPeriod instance,
+        delete the dictionary entry, and reassign the id attribute '''
+        sql = '''
+            DELETE FROM payperiods
+            WHERE id = ?
+        '''
+
+        CURSOR.execute(sql, (self.id,))
+        CONN.commit()
+
+        del type(self).all[self.id]
+
+        self.id = None
+
     @classmethod
     def create(cls, start_date, end_date):
         ''' initializes a new PayPeriod instance and saves the object to the database '''
@@ -97,5 +122,52 @@ class PayPeriod:
     @classmethod
     def instance_from_db(cls, row):
         ''' Return a PayPeriod object having the attribute values from the table row '''
+        payperiod = cls.all.get(row[0])
+        if payperiod:
+            payperiod.start_date = row[1]
+            payperiod.end_date = row[2]
+        else:
+            payperiod = cls(row[1], row[1])
+            payperiod.id = row[0]
+            cls.all[payperiod.id] = payperiod
         
+        return payperiod
+
+    @classmethod
+    def get_all(cls):
+        ''' Return a list containing a PayPeriod object per row in the table '''
+        sql = '''
+            SELECT *
+            FROM payperiods;
+        '''
+
+        rows = CURSOR.execute(sql).fetchall()
+        
+        return [cls.instance_from_db[row] for row in rows]
+
+    @classmethod
+    def find_by_date(cls, date):
+        ''' Return a PayPeriod object corresponding to table row containing specified date '''
+        sql = '''
+            SELECT *
+            FROM payperiods
+            WHERE start_date < ? < end_date;
+        '''
+        row = CURSOR.execute(sql, (self.date,)).fetchone()
+        return cls.instance_from_db(row) if row else None
+
+    def shifts(self):
+        ''' Return a list of shifts within the current payperiod '''
+        from models.shift import Shift
+        sql = '''
+            SELECT * FROM shifts
+            WHERE payperiod_id = ?;
+        '''
+        
+         rows = CURSOR.execute(sql, (self.id,)).fetchall()
+         return [Shift.instance_from_db(row) for row in rows]
+
+        
+
+
 breakpoint()
