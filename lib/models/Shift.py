@@ -1,6 +1,6 @@
 from models.__init__ import CURSOR, CONN
 from models.payperiod import PayPeriod
-from datetime import datetime
+from datetime import datetime, date, time
 
 class Shift:
     def __init__(self, date, clock_in, clock_out, cc_tips, cash_tips, payperiod_id=None, id=None):
@@ -18,10 +18,17 @@ class Shift:
 
     @date.setter
     def date(self, date):
-        ''' expects date in format: D/M/YYYY '''
+        ''' expects date in format: MM/DD/YYYY '''
         # use date time to assign proper date
-        
-        pass
+        try:
+            date_obj = date(f'{date}', "%m/%d/%y")
+
+            formatted_date = end.strftime("%m-%d-%y")
+
+            print(formatted_date)
+        except ValueError:
+            print("Invalid date format. Please enter the date as MM/DD/YY.")
+
 
     @property
     def clock_in(self):

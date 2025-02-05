@@ -42,7 +42,9 @@ class PayPeriod:
         try:
             date_obj = datetime.strptime(f'end_date', "%m/%d/%y")
 
-            formatted_date = date_obj.strftime("%m-%d-%y")
+            end_of_day = datetime.combine(date_obj.date(), time(23, 59, 59))
+
+            formatted_date = end_of_day.strftime("%m-%d-%y")
 
             print(formatted_date)
         except ValueError:
@@ -166,8 +168,6 @@ class PayPeriod:
         
          rows = CURSOR.execute(sql, (self.id,)).fetchall()
          return [Shift.instance_from_db(row) for row in rows]
-
-        
 
 
 breakpoint()
