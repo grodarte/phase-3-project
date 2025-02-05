@@ -23,13 +23,13 @@ class PayPeriod:
         ''' Expects date in format: MM/DD/YY '''
         #uses date time to properly assign date
         try:
-            date_obj = datetime.strptime(f'start_date', "%m/%d/%y")
+            date_obj = datetime.strptime(f'{start_date}', "%m/%d/%y")
 
             formatted_date = date_obj.strftime("%m-%d-%y")
 
-            print(formatted_date)
+            self._start_date = formatted_date
         except ValueError:
-            print("Invalid date format. Please enter the date as MM/DD/YY.")
+            print("Invalid start date format. Please enter the date as MM/DD/YY.")
 
     @property
     def end_date(self):
@@ -40,15 +40,16 @@ class PayPeriod:
         ''' Expects date in format: MM/DD/YY '''
         # uses date time to properly assign date
         try:
-            date_obj = datetime.strptime(f'end_date', "%m/%d/%y")
+            date_obj = datetime.strptime(f'{end_date}', "%m/%d/%y")
 
             end_of_day = datetime.combine(date_obj.date(), time(23, 59, 59))
 
             formatted_date = end_of_day.strftime("%m-%d-%y")
 
-            print(formatted_date)
+            self._end_date = formatted_date
+
         except ValueError:
-            print("Invalid date format. Please enter the date as MM/DD/YY.")
+            print("Invalid end date format. Please enter the date as MM/DD/YY.")
 
     @classmethod
     def create_table(cls):
@@ -166,8 +167,5 @@ class PayPeriod:
             WHERE payperiod_id = ?;
         '''
         
-         rows = CURSOR.execute(sql, (self.id,)).fetchall()
-         return [Shift.instance_from_db(row) for row in rows]
-
-
-breakpoint()
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Shift.instance_from_db(row) for row in rows]
