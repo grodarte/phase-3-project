@@ -87,4 +87,15 @@ class PayPeriod:
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
+    @classmethod
+    def create(cls, start_date, end_date):
+        ''' initializes a new PayPeriod instance and saves the object to the database '''
+        payperiod = cls(start_date, end_date)
+        payperiod.save()
+        return payperiod
+
+    @classmethod
+    def instance_from_db(cls, row):
+        ''' Return a PayPeriod object having the attribute values from the table row '''
+        
 breakpoint()
