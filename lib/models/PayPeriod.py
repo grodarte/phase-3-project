@@ -7,7 +7,9 @@ class PayPeriod:
     all = {}
 
     def __init__(self, smonth, sday, syear):
-        pass
+        self.smonth = smonth
+        self.sday = sday
+        self.syear = syear
 
     
     # CREATE TABLE - cls

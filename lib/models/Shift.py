@@ -30,6 +30,10 @@ class Shift:
         """Convert 2-digit year to 4-digit (assumes 2000-2049, 1950-1999)."""
         self._year = 2000 + value if value <= 49 else 1900 + value
 
+    # Month property - calls the shift date setter within
+
+    # Day property - calls the shift date setter within
+
     # Date property
     @property
     def shift_date(self):
