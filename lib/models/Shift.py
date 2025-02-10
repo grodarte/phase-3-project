@@ -70,7 +70,7 @@ class Shift:
         self.year, self.month, self.day = new_date
 
     # Validate date using datetime
-    def _validate_day(self, day_value):
+    def _validate_day(self, year, month, day):
         """Try to create a date with the given year, month, and day."""
         try:
             date(year, month, day)
