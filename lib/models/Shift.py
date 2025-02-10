@@ -2,6 +2,7 @@ from models.__init__ import CURSOR, CONN
 from models.payperiod import PayPeriod
 from datetime import datetime, date
 from decimal import Decimal
+import calendar
 
 class Shift:
 
@@ -18,21 +19,57 @@ class Shift:
 
     def __repr__(self):
         return f'Shift on {self.formatted_date()} | In: {self.clock_in} | Out: {self.clock_out}' or "Not set"
+    
+    #ADD DATE VALIDATION
+    def _validate_day(self, day_value):
+        """Validate that the day is correct for the curret month and year."""
+        if not (hasattr(self, '_year') and hasattr(self, '_month')):
+            # if year or month aren't set yet, skip detailed date validation
+            if day_value not in range(1, 32):
+                raise ValueError("Day must be between 1 and 31.") 
+        else:
+            # get the maximum day for the current month and year
+            max_day = calendar.monthrange(self._year, self._month)[1]
+            if not (1 <= day_value <= max_day):
+                raise ValueError(f'Invalid day {day_value} for month {self._month} in year {self._year}.')
 
     # Year property
     @property
     def year(self):
         return self._year
 
-    #ADD VALIDATION
     @year.setter
     def year(self, value):
         """Convert 2-digit year to 4-digit (assumes 2000-2049, 1950-1999)."""
         self._year = 2000 + value if value <= 49 else 1900 + value
 
-    # Month property - calls the shift date setter within
+        if hasattr(self, '_month') and hasattr(self, '_day'):
+            self._validate_day(self._day)
 
-    # Day property - calls the shift date setter within
+    # Month property
+    @property
+    def month(self):
+        return self._month
+
+    @month.setter
+    def month(self, month):
+        if (1 <= month <= 12):
+            self._month = month
+        else:
+            raise ValueError("Month must be between 1 and 12.")
+
+        if hasattr(self, '_year') and hasattr(self, '_day'):
+            self._validate_day(self._day)
+    
+    # Day property
+    @property
+    def day(self):
+        self._day
+    
+    @day.setter
+    def day(self, day):
+        self._validate_day(day)
+        self._day = day
 
     # Date property
     @property
@@ -40,7 +77,6 @@ class Shift:
         """Return shift date as a 'datetime.date' object."""
         return date(self._year, self.month, self.day)
 
-    #ADD VALIDATION
     @shift_date.setter
     def shift_date(self, new_date):
         """Set shift date using a tuple (year, month, day)."""
