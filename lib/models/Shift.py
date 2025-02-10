@@ -2,7 +2,6 @@ from models.__init__ import CURSOR, CONN
 from models.payperiod import PayPeriod
 from datetime import datetime, date
 from decimal import Decimal
-import calendar
 
 class Shift:
 
@@ -20,18 +19,6 @@ class Shift:
     def __repr__(self):
         return f'Shift on {self.formatted_date()} | In: {self.clock_in} | Out: {self.clock_out}' or "Not set"
     
-    #ADD DATE VALIDATION
-    def _validate_day(self, day_value):
-        """Validate that the day is correct for the curret month and year."""
-        if not (hasattr(self, '_year') and hasattr(self, '_month')):
-            # if year or month aren't set yet, skip detailed date validation
-            if day_value not in range(1, 32):
-                raise ValueError("Day must be between 1 and 31.") 
-        else:
-            # get the maximum day for the current month and year
-            max_day = calendar.monthrange(self._year, self._month)[1]
-            if not (1 <= day_value <= max_day):
-                raise ValueError(f'Invalid day {day_value} for month {self._month} in year {self._year}.')
 
     # Year property
     @property
@@ -44,7 +31,7 @@ class Shift:
         self._year = 2000 + value if value <= 49 else 1900 + value
 
         if hasattr(self, '_month') and hasattr(self, '_day'):
-            self._validate_day(self._day)
+            self._validate_day(self._year, self._month, self._day)
 
     # Month property
     @property
@@ -59,7 +46,7 @@ class Shift:
             raise ValueError("Month must be between 1 and 12.")
 
         if hasattr(self, '_year') and hasattr(self, '_day'):
-            self._validate_day(self._day)
+            self._validate_day(self._year, self._month, self._day)
     
     # Day property
     @property
@@ -68,7 +55,7 @@ class Shift:
     
     @day.setter
     def day(self, day):
-        self._validate_day(day)
+        self._validate_day(self._year, self._month, day)
         self._day = day
 
     # Date property
@@ -82,8 +69,18 @@ class Shift:
         """Set shift date using a tuple (year, month, day)."""
         self.year, self.month, self.day = new_date
 
+    # Validate date using datetime
+    def _validate_day(self, day_value):
+        """Try to create a date with the given year, month, and day."""
+        try:
+            date(year, month, day)
+        except ValueError as err:
+            raise ValueError(f'Invalid date: {err}')
+
+    # Format date MM/DD/YY
     def formatted_date(self):
         return self.shift_date.strftime("%m/%d/%y")
+
 
     # Clock-in property
     @property
