@@ -233,7 +233,24 @@ class Shift:
     # INSTANCE FROM DB - cls
     @classmethod
     def instance_from_db(cls, row):
-        """ 
+        """ return a payperiod object having the attribute values from the table row """
+        # check the dictionary for an existing instance matching the row primary key
+        shift = cls.all.get(row(0))
+        if shift:
+        # ensure attributes match row values in case local instance was modified
+            shift.year = row[1]
+            shift.month = row[2]
+            shift.day = row[3]
+            shift.clock_in = row[4]
+            shift.clock_out = row[5]
+            shift.cc_tip = row[6]
+            shift.cash_tip = row[7]
+        else:
+        # create new instance and add to dictionary if doesnt already exist
+            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+            shift.id = row[0]
+            cls.all[shift.id] = shift
+        return shift
 
     # GET ALL - cls
 
