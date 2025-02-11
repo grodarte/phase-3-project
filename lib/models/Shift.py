@@ -164,7 +164,7 @@ class Shift:
     # CREATE TABLE - cls
     @classmethod
     def create_table(cls):
-        """ create a new table to persist the attributes of shift instances """
+        """ create a new table to persist the attributes of Shift instances """
         sql = """
             CREATE TABLE IF NOT EXISTS shifts;
         """
@@ -173,6 +173,13 @@ class Shift:
 
 
     # DROP TABLE - cls
+    def drop_table(cls):
+        """ drop table that persists the Shift instances """
+        sql = """
+            DROP TABLE IF EXISTS shifts;
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
 
     # SAVE
 
