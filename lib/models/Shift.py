@@ -26,9 +26,12 @@ class Shift:
         return self._year
 
     @year.setter
-    def year(self, value):
+    def year(self, year):
         """Convert 2-digit year to 4-digit (assumes 2000-2049, 1950-1999)."""
-        self._year = 2000 + value if value <= 49 else 1900 + value
+        if year in range(0, 100):
+            self._year = 2000 + year if year <= 49 else 1900 + year
+        else:
+            raise ValueError("Year must be in YY format, between 0 and 99.")
 
         if hasattr(self, '_month') and hasattr(self, '_day'):
             self._validate_day(self._year, self._month, self._day)
