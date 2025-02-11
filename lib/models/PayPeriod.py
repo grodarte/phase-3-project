@@ -123,12 +123,12 @@ class PayPeriod:
         sql = """
             CREATE TABLE IF NOT EXISTS payperiods (
             id INTEGER PRIMARY KEY,
-            syear INTEGER,
             smonth INTEGER,
             sday INTEGER,
-            eyear INTEGER,
+            syear INTEGER,
             emonth INTEGER,
             eday INTEGER
+            eyear INTEGER,
             );
         """
         CURSOR.execute(sql)
@@ -145,9 +145,19 @@ class PayPeriod:
         CONN.commmit()
 
     # SAVE
-        """ Insert a new row with the start and end date values (year, month, day) of the current PayPeriod
+    def save(self):
+        """ Insert a new row with the start and end date values (month, day, year) of the current PayPeriod
         Update payperiod id attribute using the primary key value of each row.
         Save the object in local dictionary using the table row's PK as dictionary key"""
+        sql = """
+            INSERT INTO payperiods(smonth, sday, syear, emonth, eday, eyear)
+            VALUES (?, ?, ?, ?, ?, ?);
+        """
+        CURSOR.commit(sql, (self._smonth, self._sday, self._syear, self._emonth, self._eday, self._eyear))
+        CONN.commit()
+
+        self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
 
     # CREATE - cls
         """ Initialize a new PayPeriod instance and save the object to the database"""
