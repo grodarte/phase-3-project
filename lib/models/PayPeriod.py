@@ -115,25 +115,42 @@ class PayPeriod:
     def eday(self, eday):
         self._validate_date(self._eyear, self._emonth, eday)
         self._eday = eday
-
-
     
     # CREATE TABLE - cls
+    @classmethod
+    def create_table(cls):
+        """ Create a new table to persist the attributes of PayPeriod instances """
+
 
     # DROP TABLE - cls
+        """ Drop the table that persists PayPeriod instances """
+
 
     # SAVE
+        """ Insert a new row with the start and end date values (year, month, day) of the current PayPeriod
+        Update payperiod id attribute using the primary key value of each row.
+        Save the object in local dictionary using the table row's PK as dictionary key"""
 
     # CREATE - cls
+        """ Initialize a new PayPeriod instance and save the object to the database"""
 
     # UPDATE
+        """ Update the table row corresponding to the current PayPeriod instance """
 
     # DELETE
+        """ Delete the table row corresponding to the current PayPeriod instance,
+        delete the dictionary entry, and reassign the id attribute """
 
     # INSTANCE FROM DB - cls
-
+        """ Return a payperiod object having the attribute values from the table row """
     # GET ALL - cls
+        """ Return a list containing a Department object per row in the table """
 
     # FIND BY ID - cls
+        """ Return a payperiod object corresponding to the table row matching the specified primary key """
+
+    # FIND BY DATE - cls
+        """ Return a payperiod object corresponding to the table row containing the specified date """
 
     # shifts
+        """ Return list of shifts associated with the current payperiod """
