@@ -153,32 +153,111 @@ class PayPeriod:
             INSERT INTO payperiods(smonth, sday, syear, emonth, eday, eyear)
             VALUES (?, ?, ?, ?, ?, ?);
         """
-        CURSOR.commit(sql, (self._smonth, self._sday, self._syear, self._emonth, self._eday, self._eyear))
+        CURSOR.execute(sql, (self.smonth, self.sday, self.syear, self.emonth, self.eday, self.eyear))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     # CREATE - cls
+    @classmethod
+    def create(cls, syear, smonth, sday, eyear, emonth, eday):
         """ Initialize a new PayPeriod instance and save the object to the database"""
+        payperiod = cls(syear, smonth, sday, eyear, emonth, eday)
+        payperiod.save()
+        return payperiod
 
     # UPDATE
+    def update(self):
         """ Update the table row corresponding to the current PayPeriod instance """
+        sql = """
+            UPDATE payperiods
+            SET smonth = ?, sday = ?, syear = ?, emonth = ?, eday = ?, eyear = ?
+            WHERE id = ?;
+        """
+        CURSOR.execute(sql, (self.smonth, self.sday, self.syear, self.emonth, self.eday, self.eyear, self.id))
+        CONN.commit()
 
     # DELETE
+    def delete(self):
         """ Delete the table row corresponding to the current PayPeriod instance,
         delete the dictionary entry, and reassign the id attribute """
+        sql = """
+            DELETE FROM payperiods
+            WHERE id = ?;
+        """
+        CURSOR.execute(sql, (self.id,))
+        CONN.commit()
+
+        del type(self).all[self.id]
+        self.id = None
 
     # INSTANCE FROM DB - cls
+    @classmethod
+    def instance_from_db(cls, row):
         """ Return a payperiod object having the attribute values from the table row """
+        #check the dictionary for an existing instance using the row's primary key row[0]
+        payperiod = cls.all.get(row[0])
+        if payperiod:
+            #ensure attributes match row values in case local instance was modified
+            payperiod.smonth = row[1]
+            payperiod.sday = row[2]
+            payperiod.syear = row[3]
+            payperiod.emonth = row[4]
+            payperiod.eday = row[5]
+            payperiod.eyear = row[6]
+        else:
+            #create new instance and add to dictionary
+            payperiod = cls(row[1], row[2], row[3], row[4], row[5], row[6])
+            payperiod.id = row[0]
+            cls.all[payperiod.id] = payperiod
+        return payperiod
+
     # GET ALL - cls
-        """ Return a list containing a Department object per row in the table """
+    @classmethod
+    def get_all(cls):
+        """ Return a list containing a payperiod object per row in the table """
+        # SHOULD I ADD ON ASCENDING OR DESCENDING ORDER?
+        sql = """
+            SELECT * FROM payperiods;
+        """
+        rows = CURSOR.execute(sql).fetchall()
+
+        return [cls.instance_from_db(row) for row in rows]
 
     # FIND BY ID - cls
+    @classmethod
+    def find_by_id(cls, id):
         """ Return a payperiod object corresponding to the table row matching the specified primary key """
+        sql = """
+            SELECT id FROM payperiods
+            WHERE id = ?;
+        """
+        row = CURSOR.execute(sql, (id,)).fetchone()
+        return cls.instance_from_db(row) if row else None
 
     # FIND BY DATE - cls
+    @classmethod
+    def find_by_date(cls, year, month, day):
         """ Return a payperiod object corresponding to the table row containing the specified date """
+        sql = """
+            SELECT smonth, sday, syear, emonth, eday, eyear
+            FROM payperiods
+            WHERE syear <= ? <= eyear 
+            AND smonth <= ? <= emonth
+            AND sday <= ? <= eday;
+        """
+        row = CURSOR.execute(sql, (year, month, day)).fetchone()
+        return cls.instance_from_db(row) if row else None
 
     # shifts
-        """ Return list of shifts associated with the current payperiod """
+    # def shifts(self):
+    #     """ Return list of shifts associated with the current payperiod """
+    #     from models.shift import Shift
+    #     sql = """
+    #         SELECT * FROM shifts
+    #         WHERE payperiod_id = ?;
+    #     """
+    #     CURSOR.execute(sql, (self.id),)
+    #     row = CURSOR.fetchall()
+    #     return [Shift.instance_from_db(row) for row in rows]
