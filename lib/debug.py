@@ -7,6 +7,8 @@ from models.shift import Shift
 def reset_database():
     PayPeriod.drop_table()
     PayPeriod.create_table()
+    Shift.drop_table()
+    Shift.create_table()
 
 
 reset_database()

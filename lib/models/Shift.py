@@ -166,7 +166,18 @@ class Shift:
     def create_table(cls):
         """ create a new table to persist the attributes of Shift instances """
         sql = """
-            CREATE TABLE IF NOT EXISTS shifts;
+            CREATE TABLE IF NOT EXISTS shifts(
+            id INTEGER PRIMARY KEY,
+            year INTEGER, 
+            month INTEGER, 
+            day INTEGER, 
+            clock_in TEXT, 
+            clock_out TEXT, 
+            cc_tip FLOAT, 
+            cash_tip INTEGER,
+            payperiod_id INTEGER,
+            FOREIGN KEY (payperiod_id) REFERENCES payperiod(id)
+            );
         """
         CURSOR.execute(sql)
         CONN.commit()

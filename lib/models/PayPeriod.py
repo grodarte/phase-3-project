@@ -128,7 +128,7 @@ class PayPeriod:
             syear INTEGER,
             emonth INTEGER,
             eday INTEGER
-            eyear INTEGER,
+            eyear INTEGER
             );
         """
         CURSOR.execute(sql)
@@ -142,7 +142,7 @@ class PayPeriod:
             DROP TABLE IF EXISTS payperiods;
         """
         CURSOR.execute(sql)
-        CONN.commmit()
+        CONN.commit()
 
     # SAVE
     def save(self):
@@ -250,7 +250,6 @@ class PayPeriod:
         row = CURSOR.execute(sql, (year, month, day)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    shifts
     def shifts(self):
         """ Return list of shifts associated with the current payperiod """
         from models.shift import Shift
