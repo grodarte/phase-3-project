@@ -7,7 +7,7 @@ class Shift:
 
     all = {}
 
-    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip):
+    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id=None):
         self.year = year
         self.month = month
         self.day = day
@@ -15,6 +15,7 @@ class Shift:
         self.clock_out = clock_out
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
+        self.payperiod_id = payperiod_id
 
     def __repr__(self):
         return f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out}' or "Not set"
@@ -155,11 +156,10 @@ class Shift:
 
     @payperiod_id.setter
     def payperiod_id(self, payperiod_id):
-        # if isinstance(payperiod_id, int) and PayPeriod.find_by_id(payperiod_id):
-        #     self._payperiod_id = payperiod_id
-        # else:
-        #     raise ValueError("payperiod_id must reference a pay period in the database")
-        pass
+        if isinstance(payperiod_id, int) and PayPeriod.find_by_id(payperiod_id):
+            self._payperiod_id = payperiod_id
+        else:
+            raise ValueError("payperiod_id must reference a pay period in the database")
 
     # CREATE TABLE - cls
     @classmethod
@@ -265,12 +265,24 @@ class Shift:
     # FIND BY ID - cls
     @classmethod
     def find_by_id(cls, id):
-        """ returns shift object corresponding to the tabke row that matches the specified primary key """
+        """ returns shift object corresponding to the table row that matches the specified primary key """
         sql = """
-            SELECT id from shifts
+            SELECT id FROM shifts
             WHERE id = ?;
         """
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
     # FIND BY DATE RANGE - cls
+    @classmethod
+    def find_by_daterange(cls, syear, smonth, sday, eyear, emonth, eday):
+        """ returns a list containing the shift objects corresponding to the table rows within the specified date range """
+        sql = """
+            SELECT year, month, day
+            FROM shifts
+            WHERE ? <= year <= ?
+            AND ? <= month <= ?
+            AND ? <= day <= ?;
+        """
+        rows = CURSOR.execute(sql, (syear, eyear, smonth, emonth, sday, eday)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
