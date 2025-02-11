@@ -183,15 +183,57 @@ class Shift:
         CONN.commit()
 
     # SAVE
-    def save
+    def save(self):
+        """ inserts a new row into the database to persist the attributes of Shift instance,
+        updates shift id attribute using the primary key of each row,
+        saves the object in the local dictionary using the primary key as the dictionary key """
+        sql = """
+            INSERT INTO shifts(year, month, day, clock_in, clock_out, cc_tip, cash_tip)
+            VALUES (?, ?, ?, ?, ?, ?, ?);
+        """
+        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip))
+        CONN.commit()
+
+        self.id = CURSOR.lastrowid
+        type(self).all[self.id] = self
 
     # CREATE - cls
+    @classmethod
+    def create(cls, year, month, day, clock_in, clock_out, cc_tip, cash_tip):
+        """ initialize a new Shift instance and save the object to the database
+            return new Shift object """
+        shift = cls(year, month, day, clock_in, clock_out, cc_tip, cash_tip)
+        shift.save()
 
     # UPDATE
+    def update(self):
+        """ updates the corresponding table row for the current Shift instance """
+        sql = """
+            UPDATE shifts
+            SET year = ?, month = ?, day = ?, clock_in = ?, clock_out = ?, cc_tip = ?, cash_tip = ?
+            WHERE id = ?;
+        """
+        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.id))
+        CONN.commit()
 
     # DELETE
+    def delete(self):
+        """ delete the table tow corresponding to the current Shift instance,
+        delete the dictionary entry, reassign the id attribute """
+        sql = """
+            DELETE FROM shifts
+            WHERE id = ?;
+        """
+        CURSOR.execute(sql, (self.id))
+        CONN.commit()
+
+        del type(self).all[self.id]
+        self.id = None
 
     # INSTANCE FROM DB - cls
+    @classmethod
+    def instance_from_db(cls, row):
+        """ 
 
     # GET ALL - cls
 
