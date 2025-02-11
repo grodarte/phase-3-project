@@ -224,7 +224,7 @@ class Shift:
             DELETE FROM shifts
             WHERE id = ?;
         """
-        CURSOR.execute(sql, (self.id))
+        CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
         del type(self).all[self.id]
@@ -253,7 +253,24 @@ class Shift:
         return shift
 
     # GET ALL - cls
+    @classmethod
+    def get_all(cls):
+        """ return a list containing a shift object per row in the table """
+        sql = """
+            SELECT * FROM shifts;
+        """
+        rows = CURSOR.execute(sql).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
 
     # FIND BY ID - cls
+    @classmethod
+    def find_by_id(cls, id):
+        """ returns shift object corresponding to the tabke row that matches the specified primary key """
+        sql = """
+            SELECT id from shifts
+            WHERE id = ?;
+        """
+        row = CURSOR.execute(sql, (id,)).fetchone()
+        return cls.instance_from_db(row) if row else None
 
     # FIND BY DATE RANGE - cls

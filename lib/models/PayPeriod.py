@@ -258,6 +258,6 @@ class PayPeriod:
     #         SELECT * FROM shifts
     #         WHERE payperiod_id = ?;
     #     """
-    #     CURSOR.execute(sql, (self.id),)
+    #     CURSOR.execute(sql, (self.id,))
     #     row = CURSOR.fetchall()
     #     return [Shift.instance_from_db(row) for row in rows]
