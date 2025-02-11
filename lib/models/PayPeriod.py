@@ -250,14 +250,14 @@ class PayPeriod:
         row = CURSOR.execute(sql, (year, month, day)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    # shifts
-    # def shifts(self):
-    #     """ Return list of shifts associated with the current payperiod """
-    #     from models.shift import Shift
-    #     sql = """
-    #         SELECT * FROM shifts
-    #         WHERE payperiod_id = ?;
-    #     """
-    #     CURSOR.execute(sql, (self.id,))
-    #     row = CURSOR.fetchall()
-    #     return [Shift.instance_from_db(row) for row in rows]
+    shifts
+    def shifts(self):
+        """ Return list of shifts associated with the current payperiod """
+        from models.shift import Shift
+        sql = """
+            SELECT * FROM shifts
+            WHERE payperiod_id = ?;
+        """
+        CURSOR.execute(sql, (self.id,))
+        row = CURSOR.fetchall()
+        return [Shift.instance_from_db(row) for row in rows]
