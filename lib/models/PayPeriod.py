@@ -120,11 +120,29 @@ class PayPeriod:
     @classmethod
     def create_table(cls):
         """ Create a new table to persist the attributes of PayPeriod instances """
-
+        sql = """
+            CREATE TABLE IF NOT EXISTS payperiods (
+            id INTEGER PRIMARY KEY,
+            syear INTEGER,
+            smonth INTEGER,
+            sday INTEGER,
+            eyear INTEGER,
+            emonth INTEGER,
+            eday INTEGER
+            );
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
 
     # DROP TABLE - cls
+    @classmethod
+    def drop_table(cls):
         """ Drop the table that persists PayPeriod instances """
-
+        sql = """
+            DROP TABLE IF EXISTS payperiods;
+        """
+        CURSOR.execute(sql)
+        CONN.commmit()
 
     # SAVE
         """ Insert a new row with the start and end date values (year, month, day) of the current PayPeriod
