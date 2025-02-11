@@ -162,6 +162,15 @@ class Shift:
         pass
 
     # CREATE TABLE - cls
+    @classmethod
+    def create_table(cls):
+        """ create a new table to persist the attributes of shift instances """
+        sql = """
+            CREATE TABLE IF NOT EXISTS shifts;
+        """
+        CURSOR.execute(sql)
+        CONN.commit()
+
 
     # DROP TABLE - cls
 
