@@ -173,6 +173,7 @@ class Shift:
 
 
     # DROP TABLE - cls
+    @classmethod
     def drop_table(cls):
         """ drop table that persists the Shift instances """
         sql = """
@@ -182,6 +183,7 @@ class Shift:
         CONN.commit()
 
     # SAVE
+    def save
 
     # CREATE - cls
 
