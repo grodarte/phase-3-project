@@ -17,7 +17,7 @@ class Shift:
         self.cash_tip = cash_tip
 
     def __repr__(self):
-        return f'Shift on {self.formatted_date()} | In: {self.clock_in} | Out: {self.clock_out}' or "Not set"
+        return f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out}' or "Not set"
     
 
     # Year property
@@ -62,7 +62,7 @@ class Shift:
     @property
     def shift_date(self):
         """Return shift date as a 'datetime.date' object."""
-        return date(self._year, self.month, self.day)
+        return date(self._year, self._month, self._day)
 
     @shift_date.setter
     def shift_date(self, new_date):

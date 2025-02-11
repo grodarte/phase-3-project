@@ -15,6 +15,6 @@ shift.__repr__()
 shift.clock_out = "5:23 PM"
 shift.clock_in = "4:30 PM"
 
-
+payperiod = PayPeriod(25, 1, 16)
 
 breakpoint()
