@@ -186,8 +186,6 @@ class PayPeriod:
         payperiod = cls(syear, smonth, sday, eyear, emonth, eday)
         payperiod.save()
 
-        sql = """
-
         return payperiod
 
     # UPDATE
