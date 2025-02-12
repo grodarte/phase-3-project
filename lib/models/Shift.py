@@ -74,17 +74,12 @@ class Shift:
         """Set shift date using a tuple (year, month, day)."""
         self.year, self.month, self.day = new_date
 
+        #checks if associated payperiod changes, if so assigns new payperiod_id
         new_payperiod = PayPeriod.find_by_date(self.year, self.month, self.day)
 
-        if new_payperiod and new_payperiod.id != self.payperiod_id:
-            self.payperiod_id = new_payperiod.id 
-            sql = """
-                UPDATE shifts
-                SET payperiod_id = ?
-                WHERE id = ?
-            """
-            CURSOR.execute(sql, (self.payperiod_id, self.id))
-            CONN.commit()
+        if new_payperiod.id != self.payperiod_id:
+            self.payperiod_id = new_payperiod.id
+            
 
     # Validate date using datetime
     def _validate_day(self, year, month, day):
@@ -243,10 +238,10 @@ class Shift:
         """ updates the corresponding table row for the current Shift instance """
         sql = """
             UPDATE shifts
-            SET year = ?, month = ?, day = ?, clock_in = ?, clock_out = ?, cc_tip = ?, cash_tip = ?
+            SET year = ?, month = ?, day = ?, clock_in = ?, clock_out = ?, cc_tip = ?, cash_tip = ?, payperiod_id = ?
             WHERE id = ?;
         """
-        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.id))
+        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.payperiod_id, self.id))
         CONN.commit()
 
     # DELETE
@@ -278,9 +273,10 @@ class Shift:
             shift.clock_out = row[5]
             shift.cc_tip = row[6]
             shift.cash_tip = row[7]
+            shift.payperiod_id = row[8]
         else:
         # create new instance and add to dictionary if doesnt already exist
-            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7])
+            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
             shift.id = row[0]
             cls.all[shift.id] = shift
         return shift
