@@ -312,12 +312,17 @@ class Shift:
         out_time = datetime.strptime(self.clock_out, "%H:%M")
         return (out_time - in_time).total_seconds() / 3600
 
-    # total earned - hourly and tips
-    def total_earned(self, wage):
+    def wages_earned(self, wage=16.5):
         total_wages = 0
         if wage <= 8:
             total_wages = self.hours_worked() * wage
         else:
             overtime_hours = self.hours_worked() - 8
             total_wages = (8 * wage) + (overtime_hours * (wage * 1.5))
-        return total_wages
+        return total_wages        
+
+    # total earned - hourly and tips
+    def total_earned(self):
+        tips = self.cc_tips + self.cash_tips
+        wages = self.wages_earned()
+        return tips + wages
