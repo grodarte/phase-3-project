@@ -7,7 +7,7 @@ class Shift:
 
     all = {}
 
-    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id=None):
+    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip):
         self.year = year
         self.month = month
         self.day = day
@@ -15,7 +15,7 @@ class Shift:
         self.clock_out = clock_out
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
-        self.payperiod_id = payperiod_id
+        self.payperiod_id = self.find_payperiod()
         # replace with find payperiod for date (yr, month, day) so it dynamically find the associated pay period if there is one
 
     def __repr__(self):
@@ -150,18 +150,24 @@ class Shift:
         else:
             raise ValueError("Credit card tip must be a number with no more than two decimal places.")
 
-    # Pay period id property
-    @property
-    def payperiod_id(self):
-        return self._payperiod_id
+    # # Pay period id property
+    # @property
+    # def payperiod_id(self):
+    #     return self._payperiod_id
 
-    #ADD VALIDATION THAT CHECKS FOR EXISTING PAY PERIOD?????
-    @payperiod_id.setter
-    def payperiod_id(self, payperiod_id):
-        if isinstance(payperiod_id, int) and PayPeriod.find_by_id(payperiod_id):
-            self._payperiod_id = payperiod_id
-        else:
-            raise ValueError("payperiod_id must reference a pay period in the database")
+    # #ADD VALIDATION THAT CHECKS FOR EXISTING PAY PERIOD?????
+    # @payperiod_id.setter
+    # def payperiod_id(self, payperiod_id):
+    #     if isinstance(payperiod_id, int) and PayPeriod.find_by_id(payperiod_id):
+    #         self._payperiod_id = payperiod_id
+    #     else:
+    #         raise ValueError("payperiod_id must reference a pay period in the database")
+
+    # DYNAMICALLY find and set the payperiod id as the foreign key
+    def find_payperiod(self):
+        """Find the pay period that contains this shift's date if exists"""
+        payperiod = PayPeriod.find_by_date(self.year, self.month, self.day)
+        return payperiod.id if payperiod else None
 
     # CREATE TABLE - cls
     @classmethod
@@ -264,6 +270,7 @@ class Shift:
             shift.id = row[0]
             cls.all[shift.id] = shift
         return shift
+
 
     # GET ALL - cls
     @classmethod
