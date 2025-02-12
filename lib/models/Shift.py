@@ -16,6 +16,7 @@ class Shift:
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
         self.payperiod_id = payperiod_id
+        # replace with find payperiod for date (yr, month, day) so it dynamically find the associated pay period if there is one
 
     def __repr__(self):
         return f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out}' or "Not set"
@@ -55,7 +56,7 @@ class Shift:
     # Day property
     @property
     def day(self):
-        self._day
+        return self._day
     
     @day.setter
     def day(self, day):
@@ -121,7 +122,7 @@ class Shift:
 
     @cc_tip.setter
     def cc_tip(self, cc_tip):
-        if isinstance(cc_tip, (int, float)) and cc_tip is not None:
+        if isinstance(cc_tip, (int, float)):
             tip_value = Decimal(str(cc_tip))
             two_decimal_value = tip_value.quantize(Decimal("0.01"))
             if tip_value == two_decimal_value:
@@ -154,6 +155,7 @@ class Shift:
     def payperiod_id(self):
         return self._payperiod_id
 
+    #ADD VALIDATION THAT CHECKS FOR EXISTING PAY PERIOD?????
     @payperiod_id.setter
     def payperiod_id(self, payperiod_id):
         if isinstance(payperiod_id, int) and PayPeriod.find_by_id(payperiod_id):
@@ -289,11 +291,14 @@ class Shift:
     def find_by_daterange(cls, syear, smonth, sday, eyear, emonth, eday):
         """ returns a list containing the shift objects corresponding to the table rows within the specified date range """
         sql = """
-            SELECT year, month, day
-            FROM shifts
-            WHERE ? <= year <= ?
-            AND ? <= month <= ?
-            AND ? <= day <= ?;
+            SELECT * FROM shifts
+            WHERE (year, month, day)
+            BETWEEN (?, ?, ?)
+            AND (?, ?, ?);
         """
-        rows = CURSOR.execute(sql, (syear, eyear, smonth, emonth, sday, eday)).fetchall()
+        rows = CURSOR.execute(sql, (syear, smonth, sday, eyear, emonth, eday)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
+
+    # Hours worked method to shift
+
+    # total earned - hourly and tips

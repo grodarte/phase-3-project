@@ -127,7 +127,7 @@ class PayPeriod:
             sday INTEGER,
             syear INTEGER,
             emonth INTEGER,
-            eday INTEGER
+            eday INTEGER,
             eyear INTEGER
             );
         """
@@ -241,13 +241,11 @@ class PayPeriod:
     def find_by_date(cls, year, month, day):
         """ Return a payperiod object corresponding to the table row containing the specified date """
         sql = """
-            SELECT smonth, sday, syear, emonth, eday, eyear
-            FROM payperiods
-            WHERE syear <= ? <= eyear 
-            AND smonth <= ? <= emonth
-            AND sday <= ? <= eday;
+            SELECT * FROM payperiods
+            WHERE (syear || '-' || smonth || '-' || sday) <= (? || '-' || ? || '-' || ?) 
+            AND (eyear || '-' || emonth || '-' || eday) >= (? || '-' || ? || '-' || ?);
         """
-        row = CURSOR.execute(sql, (year, month, day)).fetchone()
+        row = CURSOR.execute(sql, (year, month, day, year, month, day)).fetchone()
         return cls.instance_from_db(row) if row else None
 
     def shifts(self):
@@ -260,3 +258,9 @@ class PayPeriod:
         CURSOR.execute(sql, (self.id,))
         row = CURSOR.fetchall()
         return [Shift.instance_from_db(row) for row in rows]
+
+    # total tips per pay period
+
+    # total hourly per pay period
+
+    # average hourly including tips
