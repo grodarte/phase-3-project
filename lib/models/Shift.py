@@ -74,6 +74,18 @@ class Shift:
         """Set shift date using a tuple (year, month, day)."""
         self.year, self.month, self.day = new_date
 
+        new_payperiod = PayPeriod.find_by_date(self.year, self.month, self.day)
+
+        if new_payperiod and new_payperiod.id != self.payperiod_id:
+            self.payperiod_id = new_payperiod.id 
+            sql = """
+                UPDATE shifts
+                SET payperiod_id = ?
+                WHERE id = ?
+            """
+            CURSOR.execute(sql, (self.payperiod_id, self.id))
+            CONN.commit()
+
     # Validate date using datetime
     def _validate_day(self, year, month, day):
         """Try to create a date with the given year, month, and day."""
@@ -166,6 +178,8 @@ class Shift:
     # DYNAMICALLY find and set the payperiod id as the foreign key
     def find_payperiod(self):
         """Find the pay period that contains this shift's date if exists"""
+        if self.payperiod_id:
+            return self.payperiod_id
         payperiod = PayPeriod.find_by_date(self.year, self.month, self.day)
         return payperiod.id if payperiod else None
 
