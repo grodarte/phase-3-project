@@ -260,7 +260,30 @@ class PayPeriod:
         return [Shift.instance_from_db(row) for row in rows]
 
     # total tips per pay period
+    def total_tips(self):
+        """ total tips earned across all shifts associated with current payperiod instance """
+        shifts = self.shifts()
+        return sum(shift.cc_tip + shift.cash_tip for shift in shifts)
 
-    # total hourly per pay period
+    def total_hours_worked(self):
+        """ total hours worked across all shifts associated with curret payperiod instance """
+        shifts = self.shifts()
+        return sum(shifts.hours_worked() for shift in shifts)
+
+    # total wages per pay period
+    def total_wages(self, wage=16.5, overtime_rate=1.5):
+        """ total wages earned (hourly) across all shifts associated with current payperiod instance """
+        shifts = self.shifts()
+        return sum(shift.wages_earned(wages, overtime_rate) for shift in shifts)
+
+    def total_earned(self):
+        """ total tips and wages earned across all shifts associated with current payperiod instance """
+        shifts = self.shifts()
+        return sum(shift.total_earned() for shift in shifts)
 
     # average hourly including tips
+    def average_hourly_with_tips(self):
+        """ calculates average earned per hour across all shifts based on total earned, not just hourly, for current payperiod instance """
+        return (self.total_earned() / self.total_hours_worked)
+        
+    # PASS WAGE AND OVERTIME RATE INTO PAYPERIOD???? 

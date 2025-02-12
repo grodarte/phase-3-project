@@ -326,7 +326,10 @@ class Shift:
 
     # total earned - hourly and tips
     def total_earned(self):
-        """ returns total earned including wages and tips """
+        """ returns total earned for current shift instance including wages and tips """
         tips = self.cc_tips + self.cash_tips
         wages = self.wages_earned()
         return tips + wages
+
+
+    # HOW MANY PLACES DO I NEED TO INCLUDE WAGE AND OVERTIME RATE to pass around to methods
