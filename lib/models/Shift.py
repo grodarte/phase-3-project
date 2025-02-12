@@ -307,5 +307,17 @@ class Shift:
         return [cls.instance_from_db(row) for row in rows]
 
     # Hours worked method to shift
+    def hours_worked(self):
+        in_time = datetime.strptime(self.clock_in, "%H:%M")
+        out_time = datetime.strptime(self.clock_out, "%H:%M")
+        return (out_time - in_time).total_seconds() / 3600
 
     # total earned - hourly and tips
+    def total_earned(self, wage):
+        total_wages = 0
+        if wage <= 8:
+            total_wages = self.hours_worked() * wage
+        else:
+            overtime_hours = self.hours_worked() - 8
+            total_wages = (8 * wage) + (overtime_hours * (wage * 1.5))
+        return total_wages
