@@ -144,6 +144,24 @@ class PayPeriod:
         CURSOR.execute(sql)
         CONN.commit()
 
+    def assign_shifts_to_payperiod(self):
+        """ finds shifts that match the new payperiod instances date range """
+        sql = """
+            SELECT id FROM shifts
+            WHERE (year, month, day) BETWEEN (?, ?, ?) AND (?, ?, ?)
+            AND payperiod_id IS NULL;
+        """
+        rows = CURSOR.execute(sql, (self.syear, self.smonth, self.sday, self.eyear, self.emonth, self.eday)).fetchall()
+
+        for row in rows:
+            shift_id = row[0]
+            sql_update = """
+                UPDATE shifts SET payperiod_id = ? WHERE id = ?;
+            """
+            CURSOR.execute(sql_update, (self.id, shift_id))
+        
+        CONN.commit()
+
     # SAVE
     def save(self):
         """ Insert a new row with the start and end date values (month, day, year) of the current PayPeriod
@@ -159,12 +177,17 @@ class PayPeriod:
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
+        self.assign_shifts_to_payperiod()
+
     # CREATE - cls
     @classmethod
     def create(cls, syear, smonth, sday, eyear, emonth, eday):
         """ Initialize a new PayPeriod instance and save the object to the database"""
         payperiod = cls(syear, smonth, sday, eyear, emonth, eday)
         payperiod.save()
+
+        sql = """
+
         return payperiod
 
     # UPDATE
@@ -285,5 +308,5 @@ class PayPeriod:
     def average_hourly_with_tips(self):
         """ calculates average earned per hour across all shifts based on total earned, not just hourly, for current payperiod instance """
         return (self.total_earned() / self.total_hours_worked)
-        
+
     # PASS WAGE AND OVERTIME RATE INTO PAYPERIOD???? 
