@@ -7,7 +7,8 @@ class Shift:
 
     all = {}
 
-    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip):
+    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, id=None):
+        self.id = id
         self.year = year
         self.month = month
         self.day = day
@@ -16,10 +17,9 @@ class Shift:
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
         self.payperiod_id = self.find_payperiod()
-        # replace with find payperiod for date (yr, month, day) so it dynamically find the associated pay period if there is one
 
     def __repr__(self):
-        return f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out}' or "Not set"
+        return f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out} | Tips: {self.cc_tip + self.cash_tip}' or "Not set"
     
 
     # Year property

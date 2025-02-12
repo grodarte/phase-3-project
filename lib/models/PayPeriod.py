@@ -6,7 +6,8 @@ class PayPeriod:
     
     all = {}
 
-    def __init__(self, syear, smonth, sday, eyear, emonth, eday):
+    def __init__(self, syear, smonth, sday, eyear, emonth, eday, id=None):
+        self.id = id
         self.syear = syear
         self.smonth = smonth
         self.sday = sday
