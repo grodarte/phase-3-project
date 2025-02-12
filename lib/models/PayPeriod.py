@@ -305,6 +305,30 @@ class PayPeriod:
     # average hourly including tips
     def average_hourly_with_tips(self):
         """ calculates average earned per hour across all shifts based on total earned, not just hourly, for current payperiod instance """
-        return (self.total_earned() / self.total_hours_worked)
+        return (self.total_earned() / self.total_hours_worked())
 
     # PASS WAGE AND OVERTIME RATE INTO PAYPERIOD???? 
+
+
+    # def update_shifts(self):
+    # """Check for shifts that should be removed or added based on new dates."""
+    # sql_remove = """
+    #     UPDATE shifts
+    #     SET payperiod_id = NULL
+    #     WHERE payperiod_id = ? AND (year, month, day) NOT BETWEEN (?, ?, ?) AND (?, ?, ?);
+    # """
+    # CURSOR.execute(sql_remove, (self.id, self.syear, self.smonth, self.sday, self.eyear, self.emonth, self.eday))
+
+    # sql_add = """
+    #     UPDATE shifts
+    #     SET payperiod_id = ?
+    #     WHERE payperiod_id IS NULL AND (year, month, day) BETWEEN (?, ?, ?) AND (?, ?, ?);
+    # """
+    # CURSOR.execute(sql_add, (self.id, self.syear, self.smonth, self.sday, self.eyear, self.emonth, self.eday))
+
+    # CONN.commit()
+
+    # Removes payperiod_id from shifts that no longer belong to this pay period.
+    # Assigns payperiod_id to new shifts that should now belong.
+
+    # Call self.update_shifts() inside each setter (syear, smonth, sday, etc.) so it auto-runs when updating dates.
