@@ -246,7 +246,7 @@ class Shift:
 
     # DELETE
     def delete(self):
-        """ delete the table tow corresponding to the current Shift instance,
+        """ delete the table row corresponding to the current Shift instance,
         delete the dictionary entry, reassign the id attribute """
         sql = """
             DELETE FROM shifts
