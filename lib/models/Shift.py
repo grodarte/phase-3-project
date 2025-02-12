@@ -308,21 +308,25 @@ class Shift:
 
     # Hours worked method to shift
     def hours_worked(self):
+        """ returns total hours worked for current shift instance """
         in_time = datetime.strptime(self.clock_in, "%H:%M")
         out_time = datetime.strptime(self.clock_out, "%H:%M")
         return (out_time - in_time).total_seconds() / 3600
 
-    def wages_earned(self, wage=16.5):
+    def wages_earned(self, wage=16.5, overtime_rate=1.5):
+        """ returns wages earned for current shift instance based on hourly at minimum wage if wage not provided,
+            calculates for overtime being time and a half (1.5x) if not provided"""
         total_wages = 0
         if wage <= 8:
             total_wages = self.hours_worked() * wage
         else:
             overtime_hours = self.hours_worked() - 8
-            total_wages = (8 * wage) + (overtime_hours * (wage * 1.5))
+            total_wages = (8 * wage) + (overtime_hours * (wage * overtime_rate))
         return total_wages        
 
     # total earned - hourly and tips
     def total_earned(self):
+        """ returns total earned including wages and tips """
         tips = self.cc_tips + self.cash_tips
         wages = self.wages_earned()
         return tips + wages
