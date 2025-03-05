@@ -25,11 +25,10 @@ class PayPeriod:
 
     @syear.setter
     def syear(self, syear):
-        """Convert 2 digit year to 4 digit year"""
-        if syear in range(0, 100):
-            self._syear = 2000 + syear if syear <= 49 else 1900 + syear
+        if syear in range(2000, 2026):
+            self._syear = syear
         else:
-            raise ValueError("Year must be in YY format, between 0 and 99.")
+            raise ValueError("Year must be in YYYY format, between 2000 and 2026.")
 
     # Start month property
     @property
@@ -50,7 +49,10 @@ class PayPeriod:
 
     @sday.setter
     def sday(self, sday):
-        self._sday = sday
+        if sday in range(1,32):
+            self._sday = sday
+        else: 
+            raise ValueError("Day must be between 1 and 31.")
 
     # End year property
     @property
@@ -59,10 +61,10 @@ class PayPeriod:
 
     @eyear.setter
     def eyear(self, eyear):
-        if eyear in range(0, 100):
-            self._eyear = 2000 + eyear if eyear <= 49 else 1900 + eyear
+        if eyear in range(2000, 2026):
+            self._eyear = eyear
         else:
-            raise ValueError("Year must be in YY format, between 0 and 99.")
+            raise ValueError("Year must be in YYYY format, between 2000 and 2026.")
 
     # End month property
     @property
@@ -83,7 +85,10 @@ class PayPeriod:
 
     @eday.setter
     def eday(self, eday):
-        self._eday = eday
+        if eday in range(1,32):
+            self._eday = eday
+        else:
+            raise ValueError("Day must be between 1 and 31.")
     
     # CREATE TABLE - cls
     @classmethod
@@ -187,7 +192,6 @@ class PayPeriod:
     @classmethod
     def get_all(cls):
         """ Return a list containing a payperiod object per row in the table """
-        # SHOULD I ADD ON ASCENDING OR DESCENDING ORDER?
         sql = """
             SELECT * FROM payperiods;
         """

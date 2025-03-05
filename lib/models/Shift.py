@@ -7,7 +7,7 @@ class Shift:
 
     all = {}
 
-    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, id=None):
+    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod, id=None):
         self.id = id
         self.year=(year)
         self.month = month
@@ -16,7 +16,7 @@ class Shift:
         self.clock_out = clock_out
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
-        # self.payperiod_id = payperiod.id
+        self.payperiod_id = payperiod.id
         # WRITE method to check payperiod object validity
     
     # Year property
@@ -26,11 +26,10 @@ class Shift:
 
     @year.setter
     def year(self, year):
-        """Convert 2-digit year to 4-digit (assumes 2000-2049, 1950-1999)."""
-        if year in range(0, 100):
-            self._year = 2000 + year if year <= 49 else 1900 + year
+        if year in range(2000, 2026):
+            self._year = year
         else:
-            raise ValueError("Year must be in YY format, between 0 and 99.")
+            raise ValueError("Year must be in YYYY format, between 2000 and 2025.")
 
     # Month property
     @property
@@ -51,7 +50,6 @@ class Shift:
     
     @day.setter
     def day(self, day):
-        self._validate_day(self._year, self._month, day)
         self._day = day       
 
     # Clock-in property
