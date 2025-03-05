@@ -18,24 +18,6 @@ class PayPeriod:
     def __repr__(self):
         return f'Pay period: {self._smonth}/{self._sday}/{self._syear} - {self._emonth}/{self._eday}/{self._eyear}'
 
-    def _validate_period(self):
-        """Ensure that the start date is before or equal to the end date."""
-
-    # Date validation method
-    def _validate_date(self, year, month, day):
-        """Try to create a date with the given year, month and day"""
-        try:
-            date(year, month, day)
-        except ValueError as err:
-            raise ValueError(f'Invalid date: {err}')
-
-        # Validates that start date is before or equal to the end date
-        if (hasattr(self, '_syear') and hasattr(self, '_smonth') and hasattr(self, '_sday') and hasattr(self, '_eyear') and hasattr(self, '_emonth') and hasattr(self, '_eday')):
-            start = date(self._syear, self._smonth, self._sday)
-            end = date(self._eyear, self._emonth, self._eday)
-            if start > end:
-                raise ValueError("Start date must be before or equal to the end date.")
-
     # Start year property
     @property
     def syear(self):
@@ -49,9 +31,6 @@ class PayPeriod:
         else:
             raise ValueError("Year must be in YY format, between 0 and 99.")
 
-        if (hasattr(self, '_smonth') and hasattr(self, '_sday')):
-            self._validate_date(self._syear, self._smonth, self._sday)
-
     # Start month property
     @property
     def smonth(self):
@@ -64,9 +43,6 @@ class PayPeriod:
         else:
             raise ValueError("Month must be between 1 and 12.")
 
-        if hasattr(self, '_syear') and hasattr(self, '_sday'):
-            self._validate_date(self._syear, self._smonth, self._sday)
-
     # Start day property
     @property
     def sday(self):
@@ -74,7 +50,6 @@ class PayPeriod:
 
     @sday.setter
     def sday(self, sday):
-        self._validate_date(self._syear, self._smonth, sday)
         self._sday = sday
 
     # End year property
@@ -88,9 +63,6 @@ class PayPeriod:
             self._eyear = 2000 + eyear if eyear <= 49 else 1900 + eyear
         else:
             raise ValueError("Year must be in YY format, between 0 and 99.")
-        
-        if (hasattr(self, '_emonth') and hasattr(self, '_eday')):
-            self._validate_date(self._eyear, self._emonth, self._eday)
 
     # End month property
     @property
@@ -103,9 +75,6 @@ class PayPeriod:
             self._emonth = emonth
         else:
             raise ValueError("Month must be between 1 and 12.")
-    
-        if (hasattr(self, '_eyear') and hasattr(self, '_eday')):
-            self._validate_date(self._eyear, self._emonth, self._eday)
 
     # End day property
     @property
@@ -114,7 +83,6 @@ class PayPeriod:
 
     @eday.setter
     def eday(self, eday):
-        self._validate_date(self._eyear, self._emonth, eday)
         self._eday = eday
     
     # CREATE TABLE - cls
@@ -145,24 +113,6 @@ class PayPeriod:
         CURSOR.execute(sql)
         CONN.commit()
 
-    def assign_shifts_to_payperiod(self):
-        """ finds shifts that match the new payperiod instances date range """
-        sql = """
-            SELECT id FROM shifts
-            WHERE (year, month, day) BETWEEN (?, ?, ?) AND (?, ?, ?)
-            AND payperiod_id IS NULL;
-        """
-        rows = CURSOR.execute(sql, (self.syear, self.smonth, self.sday, self.eyear, self.emonth, self.eday)).fetchall()
-
-        for row in rows:
-            shift_id = row[0]
-            sql_update = """
-                UPDATE shifts SET payperiod_id = ? WHERE id = ?;
-            """
-            CURSOR.execute(sql_update, (self.id, shift_id))
-        
-        CONN.commit()
-
     # SAVE
     def save(self):
         """ Insert a new row with the start and end date values (month, day, year) of the current PayPeriod
@@ -177,8 +127,6 @@ class PayPeriod:
 
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
-
-        self.assign_shifts_to_payperiod()
 
     # CREATE - cls
     @classmethod
@@ -258,18 +206,6 @@ class PayPeriod:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    # FIND BY DATE - cls
-    @classmethod
-    def find_by_date(cls, year, month, day):
-        """ Return a payperiod object corresponding to the table row containing the specified date """
-        sql = """
-            SELECT * FROM payperiods
-            WHERE (syear || '-' || smonth || '-' || sday) <= (? || '-' || ? || '-' || ?) 
-            AND (eyear || '-' || emonth || '-' || eday) >= (? || '-' || ? || '-' || ?);
-        """
-        row = CURSOR.execute(sql, (year, month, day, year, month, day)).fetchone()
-        return cls.instance_from_db(row) if row else None
-
     def shifts(self):
         """ Return list of shifts associated with the current payperiod """
         from models.shift import Shift
@@ -280,56 +216,3 @@ class PayPeriod:
         CURSOR.execute(sql, (self.id,))
         row = CURSOR.fetchall()
         return [Shift.instance_from_db(row) for row in rows]
-
-    # total tips per pay period
-    def total_tips(self):
-        """ total tips earned across all shifts associated with current payperiod instance """
-        shifts = self.shifts()
-        return sum(shift.cc_tip + shift.cash_tip for shift in shifts)
-
-    def total_hours_worked(self):
-        """ total hours worked across all shifts associated with curret payperiod instance """
-        shifts = self.shifts()
-        return sum(shifts.hours_worked() for shift in shifts)
-
-    # total wages per pay period
-    def total_wages(self, wage=16.5, overtime_rate=1.5):
-        """ total wages earned (hourly) across all shifts associated with current payperiod instance """
-        shifts = self.shifts()
-        return sum(shift.wages_earned(wages, overtime_rate) for shift in shifts)
-
-    def total_earned(self):
-        """ total tips and wages earned across all shifts associated with current payperiod instance """
-        shifts = self.shifts()
-        return sum(shift.total_earned() for shift in shifts)
-
-    # average hourly including tips
-    def average_hourly_with_tips(self):
-        """ calculates average earned per hour across all shifts based on total earned, not just hourly, for current payperiod instance """
-        return (self.total_earned() / self.total_hours_worked())
-
-    # PASS WAGE AND OVERTIME RATE INTO PAYPERIOD???? 
-
-
-    # def update_shifts(self):
-    # """Check for shifts that should be removed or added based on new dates."""
-    # sql_remove = """
-    #     UPDATE shifts
-    #     SET payperiod_id = NULL
-    #     WHERE payperiod_id = ? AND (year, month, day) NOT BETWEEN (?, ?, ?) AND (?, ?, ?);
-    # """
-    # CURSOR.execute(sql_remove, (self.id, self.syear, self.smonth, self.sday, self.eyear, self.emonth, self.eday))
-
-    # sql_add = """
-    #     UPDATE shifts
-    #     SET payperiod_id = ?
-    #     WHERE payperiod_id IS NULL AND (year, month, day) BETWEEN (?, ?, ?) AND (?, ?, ?);
-    # """
-    # CURSOR.execute(sql_add, (self.id, self.syear, self.smonth, self.sday, self.eyear, self.emonth, self.eday))
-
-    # CONN.commit()
-
-    # Removes payperiod_id from shifts that no longer belong to this pay period.
-    # Assigns payperiod_id to new shifts that should now belong.
-
-    # Call self.update_shifts() inside each setter (syear, smonth, sday, etc.) so it auto-runs when updating dates.

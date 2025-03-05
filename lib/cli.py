@@ -34,8 +34,7 @@ def main_menu():
         elif choice == 3:
             earnings_menu()
 
-        elif choice == 4:
-            break
+        
 
         else:
             print("Invalid choice. Please enter a number from 1-4")
@@ -70,8 +69,7 @@ def shifts_menu():
         elif choice == 3:
             view_shifts_in_date_range()
             # helper fn - enter start and end date to display
-        elif choice == 4:
-            break
+        
         else:
             print("Invalid choice. Please enter a number from 1-4")
     

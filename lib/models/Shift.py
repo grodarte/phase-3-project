@@ -9,19 +9,16 @@ class Shift:
 
     def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, id=None):
         self.id = id
-        self.year = year
+        self.year=(year)
         self.month = month
         self.day = day
         self.clock_in = clock_in 
         self.clock_out = clock_out
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
-        self.payperiod_id = self.find_payperiod()
-
-    def __repr__(self):
-        return f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out} | Tips: {self.cc_tip + self.cash_tip}' or "Not set"
+        # self.payperiod_id = payperiod.id
+        # WRITE method to check payperiod object validity
     
-
     # Year property
     @property
     def year(self):
@@ -35,9 +32,6 @@ class Shift:
         else:
             raise ValueError("Year must be in YY format, between 0 and 99.")
 
-        if hasattr(self, '_month') and hasattr(self, '_day'):
-            self._validate_day(self._year, self._month, self._day)
-
     # Month property
     @property
     def month(self):
@@ -49,9 +43,6 @@ class Shift:
             self._month = month
         else:
             raise ValueError("Month must be between 1 and 12.")
-
-        if hasattr(self, '_year') and hasattr(self, '_day'):
-            self._validate_day(self._year, self._month, self._day)
     
     # Day property
     @property
@@ -61,38 +52,7 @@ class Shift:
     @day.setter
     def day(self, day):
         self._validate_day(self._year, self._month, day)
-        self._day = day
-
-    # Date property
-    @property
-    def shift_date(self):
-        """Return shift date as a 'datetime.date' object."""
-        return date(self._year, self._month, self._day)
-
-    @shift_date.setter
-    def shift_date(self, new_date):
-        """Set shift date using a tuple (year, month, day)."""
-        self.year, self.month, self.day = new_date
-
-        #checks if associated payperiod changes, if so assigns new payperiod_id
-        new_payperiod = PayPeriod.find_by_date(self.year, self.month, self.day)
-
-        if new_payperiod.id != self.payperiod_id:
-            self.payperiod_id = new_payperiod.id
-            
-
-    # Validate date using datetime
-    def _validate_day(self, year, month, day):
-        """Try to create a date with the given year, month, and day."""
-        try:
-            date(year, month, day)
-        except ValueError as err:
-            raise ValueError(f'Invalid date: {err}')
-
-    # Format date MM/DD/YY
-    def formatted_date(self):
-        return self.shift_date.strftime("%m/%d/%y")
-
+        self._day = day       
 
     # Clock-in property
     @property
@@ -156,27 +116,6 @@ class Shift:
                 raise ValueError("Cash tip cannot have more than two decimal places.")
         else:
             raise ValueError("Credit card tip must be a number with no more than two decimal places.")
-
-    # # Pay period id property
-    # @property
-    # def payperiod_id(self):
-    #     return self._payperiod_id
-
-    # #ADD VALIDATION THAT CHECKS FOR EXISTING PAY PERIOD?????
-    # @payperiod_id.setter
-    # def payperiod_id(self, payperiod_id):
-    #     if isinstance(payperiod_id, int) and PayPeriod.find_by_id(payperiod_id):
-    #         self._payperiod_id = payperiod_id
-    #     else:
-    #         raise ValueError("payperiod_id must reference a pay period in the database")
-
-    # DYNAMICALLY find and set the payperiod id as the foreign key
-    def find_payperiod(self):
-        """Find the pay period that contains this shift's date if exists"""
-        if self.payperiod_id:
-            return self.payperiod_id
-        payperiod = PayPeriod.find_by_date(self.year, self.month, self.day)
-        return payperiod.id if payperiod else None
 
     # CREATE TABLE - cls
     @classmethod
@@ -303,19 +242,6 @@ class Shift:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    # FIND BY DATE RANGE - cls
-    @classmethod
-    def find_by_daterange(cls, syear, smonth, sday, eyear, emonth, eday):
-        """ returns a list containing the shift objects corresponding to the table rows within the specified date range """
-        sql = """
-            SELECT * FROM shifts
-            WHERE (year, month, day)
-            BETWEEN (?, ?, ?)
-            AND (?, ?, ?);
-        """
-        rows = CURSOR.execute(sql, (syear, smonth, sday, eyear, emonth, eday)).fetchall()
-        return [cls.instance_from_db(row) for row in rows]
-
     # Hours worked method to shift
     def hours_worked(self):
         """ returns total hours worked for current shift instance """
@@ -340,6 +266,3 @@ class Shift:
         tips = self.cc_tips + self.cash_tips
         wages = self.wages_earned()
         return tips + wages
-
-
-    # HOW MANY PLACES DO I NEED TO INCLUDE WAGE AND OVERTIME RATE to pass around to methods
