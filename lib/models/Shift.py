@@ -50,7 +50,10 @@ class Shift:
     
     @day.setter
     def day(self, day):
-        self._day = day       
+        if (0 < day < 32):
+            self._day = day
+        else:     
+            raise ValueError("Day must be between 1 and 31.")
 
     # Clock-in property
     @property

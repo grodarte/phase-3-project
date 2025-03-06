@@ -5,7 +5,7 @@ from models.payperiod import PayPeriod
 def view_all_payperiods():
     pass
 
-def select_payperiod():
+def view_shifts_in_payperiod():
     pass
 
 def create_shift():
@@ -24,20 +24,14 @@ def create_shift():
     except Exception as exc:
         print("Error creating shift: ", exc)
 
+def view_shift():
+    pass
 
-def view_all_shifts():
-    print("Fetching all shifts...")
-    #go to menu to look up shift details?
+def edit_shift():
+    pass
 
-def view_shifts_in_payperiod():
-    print("Fetching shifts for specified pay period...")
-    # let them select current, last, or other and enter date
-
-def earnings_by_payperiod():
-    print("Fetching earnings for payperiod...")
-    #input to find the pay period
-    #returns display of earnings
-    #can create level to show full breakdown
+def delete_shift():
+    pass
 
 def exit_program():
     print("Exiting program. Goodbye!")
