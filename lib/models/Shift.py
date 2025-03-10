@@ -118,6 +118,18 @@ class Shift:
         else:
             raise ValueError("Credit card tip must be a number with no more than two decimal places.")
 
+    # PayPeriod object
+    @property
+    def payperiod_id(self):
+        return self._payperiod_id
+
+    @payperiod_id.setter
+    def payperiod_id(self, payperiod_id):
+        if type(payperiod_id) is int and PayPeriod.find_by_id(payperiod_id):
+            self._payperiod_id = payperiod_id
+        else:
+            raise ValueError("payperiod_id must reference a pay period in the database.")
+
     # CREATE TABLE - cls
     @classmethod
     def create_table(cls):
@@ -243,27 +255,31 @@ class Shift:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    # Hours worked method to shift
-    def hours_worked(self):
-        """ returns total hours worked for current shift instance """
-        in_time = datetime.strptime(self.clock_in, "%H:%M")
-        out_time = datetime.strptime(self.clock_out, "%H:%M")
-        return (out_time - in_time).total_seconds() / 3600
 
-    def wages_earned(self, wage=16.5, overtime_rate=1.5):
-        """ returns wages earned for current shift instance based on hourly at minimum wage if wage not provided,
-            calculates for overtime being time and a half (1.5x) if not provided"""
-        total_wages = 0
-        if wage <= 8:
-            total_wages = self.hours_worked() * wage
-        else:
-            overtime_hours = self.hours_worked() - 8
-            total_wages = (8 * wage) + (overtime_hours * (wage * overtime_rate))
-        return total_wages        
+    # moving to front end logic
+    """ simplify below functions in front end logic to calculate as needed for selected shift """
 
-    # total earned - hourly and tips
-    def total_earned(self):
-        """ returns total earned for current shift instance including wages and tips """
-        tips = self.cc_tips + self.cash_tips
-        wages = self.wages_earned()
-        return tips + wages
+    # # Hours worked method to shift
+    # def hours_worked(self):
+    #     """ returns total hours worked for current shift instance """
+    #     in_time = datetime.strptime(self.clock_in, "%H:%M")
+    #     out_time = datetime.strptime(self.clock_out, "%H:%M")
+    #     return (out_time - in_time).total_seconds() / 3600
+
+    # def wages_earned(self, wage=16.5, overtime_rate=1.5):
+    #     """ returns wages earned for current shift instance based on hourly at minimum wage if wage not provided,
+    #         calculates for overtime being time and a half (1.5x) if not provided"""
+    #     total_wages = 0
+    #     if wage <= 8:
+    #         total_wages = self.hours_worked() * wage
+    #     else:
+    #         overtime_hours = self.hours_worked() - 8
+    #         total_wages = (8 * wage) + (overtime_hours * (wage * overtime_rate))
+    #     return total_wages        
+
+    # # total earned - hourly and tips
+    # def total_earned(self):
+    #     """ returns total earned for current shift instance including wages and tips """
+    #     tips = self.cc_tips + self.cash_tips
+    #     wages = self.wages_earned()
+    #     return tips + wages
