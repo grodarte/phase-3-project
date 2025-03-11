@@ -8,23 +8,10 @@ def view_all_payperiods():
 def view_shifts_in_payperiod():
     pass
 
-def validate_time_input(time_str):
-    """Ensure time is in HH:MM format and valid."""
-    if ":" not in time_str:
-        raise ValueError("Time must be in HH:MM format (e.g., 14:30 for 2:30 PM).")
-    
-    parts = time_str.split(":")
-    if len(parts) != 2 or not parts[0].isdigit() or not parts[1].isdigit():
-        raise ValueError("Time must contain hours and minutes as numbers.")
-    
-    hours, minutes = int(parts[0]), int(parts[1])
-    if not (0 <= hours < 24) or not (0 <= minutes < 60):
-        raise ValueError("Hours must be 0-23 and minutes 0-59.")
-    
-    return time_str
+
 
 def hours_worked(time_in, time_out):
-    
+
 
 def create_shift():
     print("Creating shift fn")

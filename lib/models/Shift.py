@@ -9,7 +9,7 @@ class Shift:
 
     def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod, id=None):
         self.id = id
-        self.year=(year)
+        self.year = year
         self.month = month
         self.day = day
         self.clock_in = clock_in 
@@ -17,7 +17,6 @@ class Shift:
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
         self.payperiod_id = payperiod.id
-        # WRITE method to check payperiod object validity
     
     # Year property
     @property
@@ -55,6 +54,16 @@ class Shift:
         else:     
             raise ValueError("Day must be between 1 and 31.")
 
+    def validate_time(self, time_str):
+    """Ensure time is in HH:MM format and valid."""
+    try:
+        hours, minutes = map(int, time_str.split(":"))
+        if 0 <= hours < 24 and 0 <= minutes < 60:
+            return time_str
+        except ValueError:
+            pass
+        raise ValueError("Time must be in HH:MM 24-hour format.")
+
     # Clock-in property
     @property
     def clock_in(self):
@@ -62,12 +71,7 @@ class Shift:
 
     @clock_in.setter
     def clock_in(self, clock_in):
-        """Convert 'HH:MM AM/PM' to 24-hour 'HH:MM' format."""
-        new_clock_in = datetime.strptime(clock_in, "%I:%M %p")
-        if hasattr(self, '_clock_out') and self._clock_out is not None: 
-            if new_clock_in >= datetime.strptime(self._clock_out, "%H:%M"):
-                raise ValueError("Clock-in time must be before clock-out time")
-        self._clock_in = new_clock_in.strftime("%H:%M")
+        self._clock_in = self._validate_time(clock_in)
 
     # Clock-out property
     @property
@@ -76,12 +80,17 @@ class Shift:
 
     @clock_out.setter
     def clock_out(self, clock_out):
-        """Convert 'HH:MM AM/PM' to 24-hour 'HH:MM' format."""
-        new_clock_out = datetime.strptime(clock_out, "%I:%M %p")
-        if hasattr(self, '_clock_in') and self._clock_in is not None:
-            if new_clock_out <= datetime.strptime(self._clock_in, "%H:%M"):
-                raise ValueError("Clock-out time must be later than clock-in time")
-        self._clock_out = new_clock_out.strftime("%H:%M")
+        self._clock_out = self._validate_time(clock_out) 
+
+    def _validate_tip(self, tip):
+    """Validate tip amount to ensure it's a positive float with two decimals."""
+    try:
+        tip = round(float(tip), 2)
+        if tip < 0:
+            raise ValueError("Tip cannot be negative")
+        return tip
+    except ValueError:
+        raise ValueError("Tip must be a positive number with up to two decimals")
 
     # Tip property (credit card)
     @property
@@ -90,16 +99,7 @@ class Shift:
 
     @cc_tip.setter
     def cc_tip(self, cc_tip):
-        if isinstance(cc_tip, (int, float)):
-            tip_value = Decimal(str(cc_tip))
-            two_decimal_value = tip_value.quantize(Decimal("0.01"))
-            if tip_value == two_decimal_value:
-                self._cc_tip = float(two_decimal_value)
-                
-            else:
-                raise ValueError("Credit card tip must have exactly two decimals.")
-        else:
-            raise ValueError("Credit card tip must be a number with two decimal places.")
+        self._cc_tip = self._validate_tip(cc_tip)
 
     # Tip property (cash)
     @property
@@ -108,15 +108,7 @@ class Shift:
 
     @cash_tip.setter
     def cash_tip(self, cash_tip):
-        if isinstance(cash_tip, (int, float)):
-            tip_value = Decimal(str(cash_tip))
-            two_decimal_value = tip_value.quantize(Decimal("0.01"))
-            if tip_value == two_decimal_value:
-                self._cash_tip = float(two_decimal_value)
-            else:
-                raise ValueError("Cash tip cannot have more than two decimal places.")
-        else:
-            raise ValueError("Credit card tip must be a number with no more than two decimal places.")
+        self._cash_tip = self._validate_tip(cash_tip)
 
     # PayPeriod object
     @property
