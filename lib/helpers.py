@@ -11,6 +11,15 @@ def view_shifts_in_payperiod():
 
 
 def hours_worked(time_in, time_out):
+    """Calculate hours worked as a decimal number."""
+    h_in, m_in = map(int, self.clock_in.split(":"))
+    h_out, m_out = map(int, self.clock_out.split(":"))
+
+    total_minutes = (h_out * 60 + m_out) - (h_in * 60 + m_in)
+    if total_minutes < 0:
+        raise ValueError("Clock-out time must be after clock-in time")
+
+    return round(total_minutes / 60, 2)
 
 
 def create_shift():

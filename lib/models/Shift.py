@@ -249,14 +249,7 @@ class Shift:
 
 
     # moving to front end logic
-    """ simplify below functions in front end logic to calculate as needed for selected shift """
-
-    # # Hours worked method to shift
-    # def hours_worked(self):
-    #     """ returns total hours worked for current shift instance """
-    #     in_time = datetime.strptime(self.clock_in, "%H:%M")
-    #     out_time = datetime.strptime(self.clock_out, "%H:%M")
-    #     return (out_time - in_time).total_seconds() / 3600
+    """ simplify below functions in front end logic to calculate as needed for selected shift """   
 
     # def wages_earned(self, wage=16.5, overtime_rate=1.5):
     #     """ returns wages earned for current shift instance based on hourly at minimum wage if wage not provided,
