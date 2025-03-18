@@ -2,7 +2,10 @@
 from models.shift import Shift
 from models.payperiod import PayPeriod
 
-def view_all_payperiods():
+def list_payperiods():
+    pass
+
+def create_payperiod():
     pass
 
 def view_shifts_in_payperiod():
@@ -21,7 +24,10 @@ def hours_worked(time_in, time_out):
 
     return round(total_minutes / 60, 2)
 
+def total_tips(cc, cash):
+    return cc + cash
 
+#NEED TO UPDATE, piece by piece validation
 def create_shift():
     print("Creating shift fn")
     year = input("Enter the shift year as 'YY': ")
@@ -33,7 +39,8 @@ def create_shift():
     cash_tip = input("Enter cash tips earned: ")
     try:
         shift = Shift.create(year, month, day, clock_in, clock_out, cc_tip, cash_tip)
-        print(f'Shift on {self.formatted_date()} | In: {self._clock_in} | Out: {self._clock_out} | Tips: {self.cc_tip + self.cash_tip}')
+        print(f"Shift on {self.month}/{self.day}/{self.year} | In: {self.clock_in} | Out: {self.clock_out} | "
+                f"Hours: {self.hours_worked(clock_in, clock_out)} | Tips: ${self.total_tips(cc_tip, cash_tip):.2f}")
         # replace with repr f string
     except Exception as exc:
         print("Error creating shift: ", exc)

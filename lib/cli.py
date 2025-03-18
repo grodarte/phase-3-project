@@ -2,31 +2,26 @@
 
 from helpers import (
     exit_program,
-    create_shift,
-    view_all_shifts,
-    view_shifts_in_payperiod,
-    view_shifts_in_date_range,
-    earnings_by_payperiod
+    list_payperiods,
 )
 
 def main_menu():
     '''Main menu for the earnings tracker'''
 
     choice = 0
-    while choice != 4:
+    while choice != 2:
 
         print("***PERSONAL EARNINGS MANAGER***")
         print("Hello...")
         print('''Please choose from the following: ''')
-        print("1 - LOG A SHIFT")
-        print("2 - VIEW PAST SHIFTS")
-        print("3 - CALCULATE EARNINGS")
-        print("4 - EXIT")
+        print("1 - View Pay Periods")
+        print("2 - Exit")
 
         choice = int(input(">>> "))
         
         if choice == 1:
-            create_shift()
+            pass
+            list_payperiods()
 
         elif choice == 2:
             shifts_menu()
@@ -113,32 +108,3 @@ if __name__ == "__main__":
 ## start month, day, year
 ## end month, day, year
 ## wage class attribute
-
-
-# ***PERSONAL EARNINGS TRACKER***
-# MAIN MENU
-# 1 - SHIFTS - i want to be able to view, edit, delete, or add a new shift
-# 2 - PAY PERIODS - i want to view
-# 3 - MONTH
-# 4 - YEAR
-# E - EXIT
-
-    # > SHIFTS
-    ## shows shifts
-    # 1 - ADD SHIFT
-    # 2 - VIEW SHIFT DETAILS - enter date
-    # 3 - GO BACK TO MAIN MENU
-
-        # >> VIEW SHIFTS
-        #somehow selects a shift
-        # 1 - Hours/Wage
-        # 2 - Tips
-        # 3 - Avg hourly wage with tips
-        # 4 - 
-
-
-    ## > PAY PERIODS
-    ## shows pay periods
-    # 1 - VIEW PAY PERIOD
-    # 2 - ADD A PAY PERIOD
-    # 3 - GO BACK TO MAIN MENU

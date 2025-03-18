@@ -7,7 +7,7 @@ class Shift:
 
     all = {}
 
-    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod, id=None):
+    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id, id=None):
         self.id = id
         self.year = year
         self.month = month
@@ -16,7 +16,10 @@ class Shift:
         self.clock_out = clock_out
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
-        self.payperiod_id = payperiod.id
+        self.payperiod_id = payperiod_id
+
+    def __repr__(self):
+        return f'{self._month}/{self._day}/{self._year} | {self._clock_in} - {self._clock_out} | Tips: {self._cc_tip + self._cash_tip}'
     
     # Year property
     @property
@@ -54,15 +57,6 @@ class Shift:
         else:     
             raise ValueError("Day must be between 1 and 31.")
 
-    def validate_time(self, time_str):
-    """Ensure time is in HH:MM format and valid."""
-    try:
-        hours, minutes = map(int, time_str.split(":"))
-        if 0 <= hours < 24 and 0 <= minutes < 60:
-            return time_str
-        except ValueError:
-            pass
-        raise ValueError("Time must be in HH:MM 24-hour format.")
 
     # Clock-in property
     @property
@@ -82,15 +76,17 @@ class Shift:
     def clock_out(self, clock_out):
         self._clock_out = self._validate_time(clock_out) 
 
-    def _validate_tip(self, tip):
-    """Validate tip amount to ensure it's a positive float with two decimals."""
-    try:
-        tip = round(float(tip), 2)
-        if tip < 0:
-            raise ValueError("Tip cannot be negative")
-        return tip
-    except ValueError:
-        raise ValueError("Tip must be a positive number with up to two decimals")
+    # validate time strings, minimize setter logic / redundancy
+    def _validate_time(self, time_str):
+        """Ensure time is in HH:MM format and valid."""
+        try:
+            hours, minutes = map(int, time_str.split(":"))
+            if 0 <= hours < 24 and 0 <= minutes < 60:
+                return time_str
+        except ValueError:
+            pass
+        raise ValueError("Time must be in HH:MM 24-hour format.")
+
 
     # Tip property (credit card)
     @property
@@ -109,6 +105,17 @@ class Shift:
     @cash_tip.setter
     def cash_tip(self, cash_tip):
         self._cash_tip = self._validate_tip(cash_tip)
+
+    # validate tip integers, minimize setter logic / redundancy
+    def _validate_tip(self, tip):
+        """Validate tip amount to ensure it's a positive float with two decimals."""
+        try:
+            tip = round(float(tip), 2)
+            if tip < 0:
+                raise ValueError("Tip cannot be negative")
+            return tip
+        except ValueError:
+            raise ValueError("Tip must be a positive number with up to two decimals")
 
     # PayPeriod object
     @property
@@ -160,10 +167,10 @@ class Shift:
         updates shift id attribute using the primary key of each row,
         saves the object in the local dictionary using the primary key as the dictionary key """
         sql = """
-            INSERT INTO shifts(year, month, day, clock_in, clock_out, cc_tip, cash_tip)
-            VALUES (?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO shifts(year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
         """
-        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip))
+        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.payperiod_id))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
@@ -171,10 +178,10 @@ class Shift:
 
     # CREATE - cls
     @classmethod
-    def create(cls, year, month, day, clock_in, clock_out, cc_tip, cash_tip):
+    def create(cls, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id):
         """ initialize a new Shift instance and save the object to the database
             return new Shift object """
-        shift = cls(year, month, day, clock_in, clock_out, cc_tip, cash_tip)
+        shift = cls(year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
         shift.save()
 
     # UPDATE
@@ -207,23 +214,16 @@ class Shift:
     def instance_from_db(cls, row):
         """ return a payperiod object having the attribute values from the table row """
         # check the dictionary for an existing instance matching the row primary key
-        shift = cls.all.get(row(0))
+        shift = cls.all.get(row[0])
         if shift:
         # ensure attributes match row values in case local instance was modified
-            shift.year = row[1]
-            shift.month = row[2]
-            shift.day = row[3]
-            shift.clock_in = row[4]
-            shift.clock_out = row[5]
-            shift.cc_tip = row[6]
-            shift.cash_tip = row[7]
-            shift.payperiod_id = row[8]
+            return shift
         else:
         # create new instance and add to dictionary if doesnt already exist
-            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
+            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
             shift.id = row[0]
             cls.all[shift.id] = shift
-        return shift
+            return shift
 
 
     # GET ALL - cls
