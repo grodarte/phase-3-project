@@ -6,14 +6,35 @@ def exit_program():
     print("Exiting program. Goodbye!")
     exit()
 
+def format_payperiod(payperiod):
+    return f'{payperiod._smonth}/{payperiod._sday}/{payperiod._syear} - {payperiod._emonth}/{payperiod._eday}/{payperiod._eyear}'
+
 def get_payperiods():
-    pass
+    payperiods = PayPeriod.get_all()
+    return payperiods
 
 def enumerate_payperiods(payperiods):
-    pass
+    print("\nPAY PERIODS:")
+    print("*********************")
+    for i, payperiod in enumerate(payperiods, start=1):
+        print(f'{i}. {format_payperiod(payperiod)}')
+    print("\n*********************")
+
 
 def create_payperiod():
-    pass
+    print("\nPay period begins on:")
+    smonth = input("Enter month (1-12): ")
+    sday = input("Enter day (1-31): ")
+    syear = input("Enter year (YYYY): ")
+    print("\nPay period ends on:")
+    emonth = input("Enter month (1-12): ")
+    eday = input("Enter day (1-31): ")
+    eyear = input("Enter year (YYYY): ")
+    try:
+        payperiod = PayPeriod.create(int(smonth), int(sday), int(syear), int(emonth), int(eday), int(eyear))
+        print(f'\nSuccess: {format_payperiod(payperiod)}')
+    except Exception as e:
+        print("\nError creating pay period: ", e)
 
 def update_payperiod(payperiod_obj):
     pass
@@ -22,10 +43,18 @@ def calculate_payperiod_earnings(payperiod_obj):
     pass
 
 def get_shifts(payperiod_obj):
-    pass
+    shifts = payperiod_obj.shifts()
+    return shifts
 
-def enumerate_shifts(shifts):
-    pass
+def enumerate_shifts(selected_payperiod, shifts):
+    print(f'\nShifts in Pay Period: {format_payperiod(selected_payperiod)}')
+    print("*********************")
+    if shifts:
+        for i, shift in enumerate(shifts, start=1):
+            print(f'{i}. {shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift._clock_in, shift._clock_out)} | Tips: {shift._cc_tip + shift._cash_tip}')
+    else:
+        print("\nNo shifts recorded.")
+    print("\n*********************")    
 
 def display_shift_details(shift_obj):
     pass
@@ -40,34 +69,13 @@ def delete_shift(shift_obj):
     pass
 
 
-# def hours_worked(time_in, time_out):
-#     """Calculate hours worked as a decimal number."""
-#     h_in, m_in = map(int, self.clock_in.split(":"))
-#     h_out, m_out = map(int, self.clock_out.split(":"))
+def hours_worked(time_in, time_out):
+    """Calculate hours worked as a decimal number."""
+    h_in, m_in = map(int, time_in.split(":"))
+    h_out, m_out = map(int, time_out.split(":"))
 
-#     total_minutes = (h_out * 60 + m_out) - (h_in * 60 + m_in)
-#     if total_minutes < 0:
-#         raise ValueError("Clock-out time must be after clock-in time")
+    total_minutes = (h_out * 60 + m_out) - (h_in * 60 + m_in)
+    if total_minutes < 0:
+        raise ValueError("Clock-out time must be after clock-in time")
 
-#     return round(total_minutes / 60, 2)
-
-# def total_tips(cc, cash):
-#     return cc + cash
-
-# #NEED TO UPDATE, piece by piece validation
-# def create_shift():
-#     print("Creating shift fn")
-#     year = input("Enter the shift year as 'YY': ")
-#     month = input("Enter the shift month: ")
-#     day = input("Enter the shift day: ")
-#     clock_in = input("Enter clock-in time as 'HH:MM AM/PM': ")
-#     clock_out = input("Enter clock-out time as 'HH:MM AM/PM': ")
-#     cc_tip = input("Enter tips earned via credit card: ")
-#     cash_tip = input("Enter cash tips earned: ")
-#     try:
-#         shift = Shift.create(year, month, day, clock_in, clock_out, cc_tip, cash_tip)
-#         print(f"Shift on {self.month}/{self.day}/{self.year} | In: {self.clock_in} | Out: {self.clock_out} | "
-#                 f"Hours: {self.hours_worked(clock_in, clock_out)} | Tips: ${self.total_tips(cc_tip, cash_tip):.2f}")
-#         # replace with repr f string
-#     except Exception as exc:
-#         print("Error creating shift: ", exc)
+    return round(total_minutes / 60, 2)

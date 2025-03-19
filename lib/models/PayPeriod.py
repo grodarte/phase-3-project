@@ -6,7 +6,7 @@ class PayPeriod:
     
     all = {}
 
-    def __init__(self, syear, smonth, sday, eyear, emonth, eday, id=None):
+    def __init__(self, smonth, sday, syear, emonth, eday, eyear, id=None):
         self.id = id
         self.syear = syear
         self.smonth = smonth
@@ -15,17 +15,14 @@ class PayPeriod:
         self.emonth = emonth
         self.eday = eday
 
-    def __repr__(self):
-        return f'Pay period: {self._smonth}/{self._sday}/{self._syear} - {self._emonth}/{self._eday}/{self._eyear}'
-
     # Start year property
     @property
     def syear(self):
         return self._syear
 
     @syear.setter
-    def syear(self, syear):
-        if syear in range(2000, 2026):
+    def syear(self, syear):   
+        if 2000 <= syear <= 2026:
             self._syear = syear
         else:
             raise ValueError("Year must be in YYYY format, between 2000 and 2026.")
@@ -61,7 +58,7 @@ class PayPeriod:
 
     @eyear.setter
     def eyear(self, eyear):
-        if eyear in range(2000, 2026):
+        if 2000 <= eyear <= 2025:
             self._eyear = eyear
         else:
             raise ValueError("Year must be in YYYY format, between 2000 and 2026.")
@@ -135,9 +132,9 @@ class PayPeriod:
 
     # CREATE - cls
     @classmethod
-    def create(cls, syear, smonth, sday, eyear, emonth, eday):
+    def create(cls, smonth, sday, syear, emonth, eday, eyear):
         """ Initialize a new PayPeriod instance and save the object to the database"""
-        payperiod = cls(syear, smonth, sday, eyear, emonth, eday)
+        payperiod = cls(smonth, sday, syear, emonth, eday, eyear)
         payperiod.save()
 
         return payperiod
@@ -170,10 +167,18 @@ class PayPeriod:
     # INSTANCE FROM DB - cls
     @classmethod
     def instance_from_db(cls, row):
+
         """ Return a payperiod object having the attribute values from the table row """
         #check the dictionary for an existing instance using the row's primary key row[0]
         payperiod = cls.all.get(row[0])
         if payperiod:
+            # ensure attributes match row values in case local insance was modified
+            # payperiod.smonth = row[1]
+            # payperiod.sday = row[2]
+            # payperiod.syear = row[3]
+            # payperiod.emonth = row[4]
+            # payperiod.eday = row[5]
+            # payperiod.eyear = row[6]
             return payperiod
         else:
             #create new instance and add to dictionary
@@ -212,5 +217,5 @@ class PayPeriod:
             WHERE payperiod_id = ?;
         """
         CURSOR.execute(sql, (self.id,))
-        row = CURSOR.fetchall()
+        rows = CURSOR.fetchall()
         return [Shift.instance_from_db(row) for row in rows]

@@ -7,19 +7,19 @@ class Shift:
 
     all = {}
 
-    def __init__(self, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id, id=None):
+    def __init__(self, month, day, year, clock_in, clock_out, cc_tip, cash_tip, payperiod_id, id=None):
         self.id = id
-        self.year = year
         self.month = month
         self.day = day
+        self.year = year
         self.clock_in = clock_in 
         self.clock_out = clock_out
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
         self.payperiod_id = payperiod_id
 
-    def __repr__(self):
-        return f'{self._month}/{self._day}/{self._year} | {self._clock_in} - {self._clock_out} | Tips: {self._cc_tip + self._cash_tip}'
+    # def __repr__(self):
+    #     return f'{self._month}/{self._day}/{self._year} | {self._clock_in} - {self._clock_out} | Tips: {self._cc_tip + self._cash_tip}'
     
     # Year property
     @property
@@ -136,9 +136,9 @@ class Shift:
         sql = """
             CREATE TABLE IF NOT EXISTS shifts(
             id INTEGER PRIMARY KEY,
-            year INTEGER, 
             month INTEGER, 
             day INTEGER, 
+            year INTEGER, 
             clock_in TEXT, 
             clock_out TEXT, 
             cc_tip FLOAT, 
@@ -167,10 +167,10 @@ class Shift:
         updates shift id attribute using the primary key of each row,
         saves the object in the local dictionary using the primary key as the dictionary key """
         sql = """
-            INSERT INTO shifts(year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
+            INSERT INTO shifts(month, day, year, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?);
         """
-        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.payperiod_id))
+        CURSOR.execute(sql, (self.month, self.day, self.year, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.payperiod_id))
         CONN.commit()
 
         self.id = CURSOR.lastrowid
@@ -178,10 +178,10 @@ class Shift:
 
     # CREATE - cls
     @classmethod
-    def create(cls, year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id):
+    def create(cls, month, day, year, clock_in, clock_out, cc_tip, cash_tip, payperiod_id):
         """ initialize a new Shift instance and save the object to the database
             return new Shift object """
-        shift = cls(year, month, day, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
+        shift = cls(month, day, year, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
         shift.save()
 
     # UPDATE
@@ -189,10 +189,10 @@ class Shift:
         """ updates the corresponding table row for the current Shift instance """
         sql = """
             UPDATE shifts
-            SET year = ?, month = ?, day = ?, clock_in = ?, clock_out = ?, cc_tip = ?, cash_tip = ?, payperiod_id = ?
+            SET month = ?, day = ?, year = ?, clock_in = ?, clock_out = ?, cc_tip = ?, cash_tip = ?, payperiod_id = ?
             WHERE id = ?;
         """
-        CURSOR.execute(sql, (self.year, self.month, self.day, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.payperiod_id, self.id))
+        CURSOR.execute(sql, (self.month, self.day, self.year, self.clock_in, self.clock_out, self.cc_tip, self.cash_tip, self.payperiod_id, self.id))
         CONN.commit()
 
     # DELETE
@@ -220,7 +220,7 @@ class Shift:
             return shift
         else:
         # create new instance and add to dictionary if doesnt already exist
-            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9])
+            shift = cls(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
             shift.id = row[0]
             cls.all[shift.id] = shift
             return shift

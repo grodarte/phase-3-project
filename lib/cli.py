@@ -52,7 +52,7 @@ def show_payperiods_menu():
             choice_num = int(choice)
             if choice_num in range(1, len(payperiods)):
                 selected_payperiod = payperiods[choice_num - 1]
-                shifts_menu(selected_payperiod)
+                show_shifts_menu(selected_payperiod)
             else:
                 print(f'\nInvalid pay period selection, please try again.')
         elif choice == 'a':
@@ -68,7 +68,7 @@ def show_shifts_menu(selected_payperiod):
 
     while choice != 'b':
         shifts = get_shifts(selected_payperiod)
-        enumerate_shifts(shifts)
+        enumerate_shifts(selected_payperiod, shifts)
         print("\nPlease select the number of the shift to see details")
         print("               OR")
         print("Type A or a to ADD a new shift to this pay period")
