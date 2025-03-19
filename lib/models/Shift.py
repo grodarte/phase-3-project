@@ -108,14 +108,14 @@ class Shift:
 
     # validate tip integers, minimize setter logic / redundancy
     def _validate_tip(self, tip):
-        """Validate tip amount to ensure it's a positive float with two decimals."""
+        """Validate tip amount to ensure it's a 0 or positive float with two decimals."""
         try:
             tip = round(float(tip), 2)
             if tip < 0:
                 raise ValueError("Tip cannot be negative")
             return tip
         except ValueError:
-            raise ValueError("Tip must be a positive number with up to two decimals")
+            raise ValueError("Tip must be a 0 or positive number with up to two decimals")
 
     # PayPeriod object
     @property
@@ -183,6 +183,8 @@ class Shift:
             return new Shift object """
         shift = cls(month, day, year, clock_in, clock_out, cc_tip, cash_tip, payperiod_id)
         shift.save()
+
+        return shift
 
     # UPDATE
     def update(self):

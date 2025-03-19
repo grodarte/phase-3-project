@@ -113,10 +113,26 @@ def selected_shift_menu(selected_shift):
         if choice == 'u':
             update_shift(selected_shift)
         elif choice == 'd':
-            delete_shift(selected_shift)
+            delete_shift_menu(selected_shift)
         elif choice == 'e':
             exit_program()
         elif choice != 'b':
+            print("\nInvalid choice, please try again.")
+
+def delete_shift_menu(selected_shift):
+    choice = ''
+
+    while choice != 'n':
+        print("\n*** WARNING: Deleting shift cannot be undone ***")
+        print("\nAre you sure you want to delete shift?")
+        print("\nType Y or y for Yes")
+        print("Type N or n for No")
+
+        choice = input("\n>>> ").strip().lower()
+
+        if choice == 'y':
+            delete_shift(selected_shift)
+        elif choice != 'n':
             print("\nInvalid choice, please try again.")
 
 if __name__ == "__main__":
