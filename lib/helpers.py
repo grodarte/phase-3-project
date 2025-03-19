@@ -15,10 +15,10 @@ def get_payperiods():
 
 def enumerate_payperiods(payperiods):
     print("\nPAY PERIODS:")
-    print("*********************")
+    print("**************************")
     for i, payperiod in enumerate(payperiods, start=1):
         print(f'{i}. {format_payperiod(payperiod)}')
-    print("\n*********************")
+    print("\n**************************")
 
 
 def create_payperiod():
@@ -37,7 +37,28 @@ def create_payperiod():
         print("\nError creating pay period: ", e)
 
 def update_payperiod(payperiod_obj):
-    pass
+    id_ = payperiod_obj.id
+    try:
+        print("Enter the updated pay period information or hit <enter> to leave it as is!")
+        print("\nPay period begins on:")
+        smonth = input(f"Current Month: {payperiod_obj._smonth} | New month (1-12): ")
+        if smonth: payperiod_obj.smonth = int(smonth)
+        sday = input(f"Current Day: {payperiod_obj._sday} | New day (1-31): ")
+        if sday: payperiod_obj.sday = int(sday)
+        syear = input(f"Current Year: {payperiod_obj._syear} | New year (YYYY): ")
+        if syear: payperiod_obj.syear = int(syear)
+        print("\nPay period ends on:")
+        emonth = input(f"Current Month: {payperiod_obj._emonth} | New month (1-12): ")
+        if emonth: payperiod_obj.emonth = int(emonth)
+        eday = input(f"Current Day: {payperiod_obj._eday} | New day (1-31): ")
+        if eday: payperiod_obj.eday = int(eday)
+        eyear = input(f"Current Year: {payperiod_obj._eyear} | New year (YYYY): ")
+        if eyear: payperiod_obj.eyear = int(eyear)
+
+        payperiod_obj.update()
+        print(f'\nSuccess: {format_payperiod(payperiod_obj)}')
+    except Exception as e:
+        print("Error updating department: ", e)
 
 def calculate_payperiod_earnings(payperiod_obj):
     pass
@@ -48,16 +69,24 @@ def get_shifts(payperiod_obj):
 
 def enumerate_shifts(selected_payperiod, shifts):
     print(f'\nShifts in Pay Period: {format_payperiod(selected_payperiod)}')
-    print("*********************")
+    print("**************************")
     if shifts:
         for i, shift in enumerate(shifts, start=1):
             print(f'{i}. {shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift._clock_in, shift._clock_out)} | Tips: {shift._cc_tip + shift._cash_tip}')
     else:
         print("\nNo shifts recorded.")
-    print("\n*********************")    
+    print("\n**************************")    
 
 def display_shift_details(shift_obj):
-    pass
+    print(f'\nSHIFT DETAILS ON: {shift_obj._month}/{shift_obj._day}/{shift_obj._year}')
+    print("**************************")
+    print(f'\nClock In Time: {shift_obj._clock_in}')
+    print(f'Clock Out Time: {shift_obj._clock_out}')
+    print(f'Hours Worked: {hours_worked(shift_obj._clock_in, shift_obj._clock_out)} hours')
+    print(f'\nCredit Card Tips: ${shift_obj._cc_tip}')
+    print(f'Cash Tips: ${shift_obj._cash_tip}')    
+    print("\n**************************")
+
 
 def create_shift(payperiod_id):
     pass

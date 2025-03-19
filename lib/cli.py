@@ -24,7 +24,7 @@ def main_menu():
         print('''\nPlease choose from the following: ''')
         print("\nType P or p to view the PAY PERIODS")
         print("OR type E or e to EXIT")
-        choice = input(">>> ").strip().lower()
+        choice = input("\n>>> ").strip().lower()
 
         if choice == 'p':
             show_payperiods_menu()
@@ -46,11 +46,11 @@ def show_payperiods_menu():
         print("Type B or b to go BACK to previous menu")
         print("Type E or e to EXIT the program")
 
-        choice = input(">>> ").strip().lower()
+        choice = input("\n>>> ").strip().lower()
 
         if choice.isdigit():
             choice_num = int(choice)
-            if choice_num in range(1, len(payperiods)):
+            if choice_num in range(1, len(payperiods) + 1):
                 selected_payperiod = payperiods[choice_num - 1]
                 show_shifts_menu(selected_payperiod)
             else:
@@ -77,11 +77,11 @@ def show_shifts_menu(selected_payperiod):
         print("Type B or b to go BACK to previous menu")
         print("Type E or e to EXIT the program")
 
-        choice = input(">>> ").strip().lower()
+        choice = input("\n>>> ").strip().lower()
 
         if choice.isdigit():
             choice_num = int(choice)
-            if choice_num in range(1, len(shifts)):
+            if choice_num in range(1, len(shifts) + 1):
                 selected_shift = shifts[choice_num - 1]
                 selected_shift_menu(selected_shift)
             else:
@@ -108,7 +108,7 @@ def selected_shift_menu(selected_shift):
         print("Type B or b to go BACK to the previous menu")
         print("Type E or e to EXIT the program")
 
-        choice = input(">>> ").strip().lower()
+        choice = input("\n>>> ").strip().lower()
 
         if choice == 'u':
             update_shift(selected_shift)
