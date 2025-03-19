@@ -138,10 +138,9 @@ def update_shift(shift_obj):
 def delete_shift(shift_obj):
     try:
         shift_obj.delete()
-        print(f'Shift deleted successfully: {format_shift(shift_obj)}')
+        print(f'\nShift deleted successfully: {format_shift(shift_obj)}')
     except Exception as e:
-        print("Error deleting shift: ", e)    
-
+        print("\nError deleting shift: ", e)    
 
 def hours_worked(time_in, time_out):
     """Calculate hours worked as a decimal number."""

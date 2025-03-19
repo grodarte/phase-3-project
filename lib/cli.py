@@ -114,6 +114,7 @@ def selected_shift_menu(selected_shift):
             update_shift(selected_shift)
         elif choice == 'd':
             delete_shift_menu(selected_shift)
+            choice = 'b'
         elif choice == 'e':
             exit_program()
         elif choice != 'b':
@@ -132,6 +133,7 @@ def delete_shift_menu(selected_shift):
 
         if choice == 'y':
             delete_shift(selected_shift)
+            choice = 'n'
         elif choice != 'n':
             print("\nInvalid choice, please try again.")
 
