@@ -91,6 +91,10 @@ def show_shifts_menu(selected_payperiod):
         elif choice == 'u':
             update_payperiod(selected_payperiod)
         elif choice == 'c':
+            minimum_wage = 16.50
+            print("\nEnter your wage or hit <enter> to proceed with earnings calculations at minimum wage (${minimum_wage})")
+            wage_input = input("\n ")
+            print("\nWage must be a positive number with up to two decimal places")
             calculate_payperiod_earnings(selected_payperiod)
         elif choice == 'e':
             exit_program()

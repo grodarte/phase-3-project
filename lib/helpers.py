@@ -16,8 +16,11 @@ def get_payperiods():
 def enumerate_payperiods(payperiods):
     print("\nPAY PERIODS:")
     print("**************************")
-    for i, payperiod in enumerate(payperiods, start=1):
-        print(f'{i}. {format_payperiod(payperiod)}')
+    if payperiods:
+        for i, payperiod in enumerate(payperiods, start=1):
+            print(f'{i}. {format_payperiod(payperiod)}')
+    else:
+        print("\nNo pay periods recorded.")
     print("\n**************************")
 
 
@@ -61,6 +64,16 @@ def update_payperiod(payperiod_obj):
 
 def calculate_payperiod_earnings(payperiod_obj):
     pass
+    # try:
+    #     minimum_wage = 16.50
+    #     print("\nEnter your wage or hit <enter> to proceed with earnings calculations at minimum wage (${minimum_wage})")
+    #     wage_input = input("\n>>> ")
+            
+    #         print("\nWage must be a positive number with up to two decimal places")
+    # print("\nHere are the pay period details for the selected pay period:")
+    # print("**************************")
+    # print(f'Pay Period: {format_payperiod(payperiod_obj)}')
+
 
 def format_shift(shift):
     return f'{shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift._clock_in, shift._clock_out)} hours | Tips: ${shift._cc_tip + shift._cash_tip}'
