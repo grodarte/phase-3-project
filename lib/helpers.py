@@ -83,7 +83,7 @@ def calculate_payperiod_earnings(payperiod_obj):
             cash_tips += shift.cash_tip
             total_hours_worked = hours_worked(shift)
             if total_hours_worked <= 8:
-                regular_hours += total_hours
+                regular_hours += total_hours_worked
             else:
                 regular_hours += 8
                 overtime_hours += (total_hours_worked - 8)
@@ -95,10 +95,10 @@ def calculate_payperiod_earnings(payperiod_obj):
     print(f'Pay Period: {format_payperiod(payperiod_obj)}')
 
     print(f'\nEarnings               rate           hours/units            this period')
-    print(f'Regular:               {wage}                {regular_hours}                      {wage * regular_hours}')
+    print(f'Regular:               {wage}                {round(regular_hours,2)}                      {round(wage * regular_hours,2)}')
     print(f'Overtime:              {overtime_wage}              {round(overtime_hours,2)}                    {round(overtime_wage * overtime_hours, 2)}')
-    print(f'Credit card tips owed:                   0.00                    {cc_tips}')
-    print(f'\n                        Gross Pay                              ${(wage*regular_hours)+(overtime_wage*overtime_hours)}')
+    print(f'Credit card tips owed:                   0.00                    {round(cc_tips, 2)}')
+    print(f'\n                        Gross Pay                              ${round((wage*regular_hours)+(overtime_wage*overtime_hours)+cc_tips,2)}')
     print(f'                      + Cash tips paid out.....................${cash_tips}')
     print("\n***********************************************************************************")
 
