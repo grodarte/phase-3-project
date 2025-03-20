@@ -104,8 +104,6 @@ def calculate_payperiod_earnings(payperiod_obj):
     print("\n***********************************************************************************")
 
         
-
-
 def format_shift(shift):
     return f'{shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift)} hours | Tips: ${shift._cc_tip + shift._cash_tip}'
 
