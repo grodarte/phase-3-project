@@ -62,7 +62,6 @@ def update_payperiod(payperiod_obj):
     except Exception as e:
         print("Error updating department: ", e)
 
-# CURRENTLY WORKING ON
 def calculate_payperiod_earnings(payperiod_obj):
     regular_hours = 0
     overtime_hours = 0
