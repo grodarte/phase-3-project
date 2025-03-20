@@ -17,9 +17,6 @@ class Shift:
         self.cc_tip = cc_tip
         self.cash_tip = cash_tip
         self.payperiod_id = payperiod_id
-
-    # def __repr__(self):
-    #     return f'{self._month}/{self._day}/{self._year} | {self._clock_in} - {self._clock_out} | Tips: {self._cc_tip + self._cash_tip}'
     
     # Year property
     @property
@@ -218,7 +215,6 @@ class Shift:
         # check the dictionary for an existing instance matching the row primary key
         shift = cls.all.get(row[0])
         if shift:
-        # ensure attributes match row values in case local instance was modified
             return shift
         else:
         # create new instance and add to dictionary if doesnt already exist
@@ -248,25 +244,3 @@ class Shift:
         """
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
-
-    # moving to front end logic
-    """ simplify below functions in front end logic to calculate as needed for selected shift """   
-
-    # def wages_earned(self, wage=16.5, overtime_rate=1.5):
-    #     """ returns wages earned for current shift instance based on hourly at minimum wage if wage not provided,
-    #         calculates for overtime being time and a half (1.5x) if not provided"""
-    #     total_wages = 0
-    #     if wage <= 8:
-    #         total_wages = self.hours_worked() * wage
-    #     else:
-    #         overtime_hours = self.hours_worked() - 8
-    #         total_wages = (8 * wage) + (overtime_hours * (wage * overtime_rate))
-    #     return total_wages        
-
-    # # total earned - hourly and tips
-    # def total_earned(self):
-    #     """ returns total earned for current shift instance including wages and tips """
-    #     tips = self.cc_tips + self.cash_tips
-    #     wages = self.wages_earned()
-    #     return tips + wages

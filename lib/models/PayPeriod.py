@@ -172,13 +172,6 @@ class PayPeriod:
         #check the dictionary for an existing instance using the row's primary key row[0]
         payperiod = cls.all.get(row[0])
         if payperiod:
-            # ensure attributes match row values in case local insance was modified
-            # payperiod.smonth = row[1]
-            # payperiod.sday = row[2]
-            # payperiod.syear = row[3]
-            # payperiod.emonth = row[4]
-            # payperiod.eday = row[5]
-            # payperiod.eyear = row[6]
             return payperiod
         else:
             #create new instance and add to dictionary
