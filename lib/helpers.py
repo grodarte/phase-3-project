@@ -62,21 +62,52 @@ def update_payperiod(payperiod_obj):
     except Exception as e:
         print("Error updating department: ", e)
 
+# CURRENTLY WORKING ON
 def calculate_payperiod_earnings(payperiod_obj):
-    pass
-    # try:
-    #     minimum_wage = 16.50
-    #     print("\nEnter your wage or hit <enter> to proceed with earnings calculations at minimum wage (${minimum_wage})")
-    #     wage_input = input("\n>>> ")
+    regular_hours = 0
+    overtime_hours = 0
+    total_hours = regular_hours + overtime_hours
+    cc_tips = 0
+    cash_tips = 0
+    total_tips = cc_tips + cash_tips
+    wage = 16.50
+    overtime_rate = 1.5
+    overtime_wage = wage * overtime_rate
+
+    try:
+        print("\nEnter your wage or hit <enter> to proceed with earnings calculations at minimum wage (${wage})")
+        wage_input = input("\n>>> ")
+        if wage_input: wage = wage_input
+
+        for shift in get_shifts(payperiod_obj):
+            cc_tips += shift.cc_tip
+            cash_tips += shift.cash_tip
+            total_hours_worked = hours_worked(shift)
+            if total_hours_worked <= 8:
+                regular_hours += total_hours
+            else:
+                regular_hours += 8
+                overtime_hours += (total_hours_worked - 8)
+    except Exception as e:
+        print("Error calculating pay period wages: ", e)
             
-    #         print("\nWage must be a positive number with up to two decimal places")
-    # print("\nHere are the pay period details for the selected pay period:")
-    # print("**************************")
-    # print(f'Pay Period: {format_payperiod(payperiod_obj)}')
+    print("\nHere are the pay period details for the selected pay period:")
+    print("***********************************************************************************")
+    print(f'Pay Period: {format_payperiod(payperiod_obj)}')
+
+    print(f'\nEarnings               rate           hours/units            this period')
+    print(f'Regular:               {wage}                {regular_hours}                      {wage * regular_hours}')
+    print(f'Overtime:              {overtime_wage}              {round(overtime_hours,2)}                    {round(overtime_wage * overtime_hours, 2)}')
+    print(f'Credit card tips owed:                   0.00                    {cc_tips}')
+    print(f'\n                        Gross Pay                              ${(wage*regular_hours)+(overtime_wage*overtime_hours)}')
+    print(f'                      + Cash tips paid out.....................${cash_tips}')
+    print("\n***********************************************************************************")
+
+        
 
 
 def format_shift(shift):
-    return f'{shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift._clock_in, shift._clock_out)} hours | Tips: ${shift._cc_tip + shift._cash_tip}'
+    return f'{shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift)} hours | Tips: ${shift._cc_tip + shift._cash_tip}'
 
 def get_shifts(payperiod_obj):
     shifts = payperiod_obj.shifts()
@@ -97,7 +128,7 @@ def display_shift_details(shift_obj):
     print("**************************")
     print(f'\nClock In Time: {shift_obj._clock_in}')
     print(f'Clock Out Time: {shift_obj._clock_out}')
-    print(f'Hours Worked: {hours_worked(shift_obj._clock_in, shift_obj._clock_out)} hours')
+    print(f'Hours Worked: {hours_worked(shift_obj)} hours')
     print(f'\nCredit Card Tips: ${shift_obj._cc_tip}')
     print(f'Cash Tips: ${shift_obj._cash_tip}')
     print(f'Total Tips: ${shift_obj._cc_tip + shift_obj._cash_tip}')
@@ -155,10 +186,10 @@ def delete_shift(shift_obj):
     except Exception as e:
         print("\nError deleting shift: ", e)    
 
-def hours_worked(time_in, time_out):
+def hours_worked(shift_obj):
     """Calculate hours worked as a decimal number."""
-    h_in, m_in = map(int, time_in.split(":"))
-    h_out, m_out = map(int, time_out.split(":"))
+    h_in, m_in = map(int, shift_obj._clock_in.split(":"))
+    h_out, m_out = map(int, shift_obj._clock_out.split(":"))
 
     total_minutes = (h_out * 60 + m_out) - (h_in * 60 + m_in)
     if total_minutes < 0:
