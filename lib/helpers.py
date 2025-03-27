@@ -62,6 +62,21 @@ def update_payperiod(payperiod_obj):
     except Exception as e:
         print("Error updating department: ", e)
 
+def delete_payperiod(selected_payperiod):
+    try:
+        shifts = get_shifts(selected_payperiod)
+        for shift in shifts:
+            shift.delete()
+        print(f'\n{len(shifts)} shift(s) deleted successfully')
+    except Exception as e:
+        print("\nError deleting shifts: ", e)
+    try:
+        selected_payperiod.delete()
+        print(f'Payperiod deleted successfully: {format_payperiod(selected_payperiod)}')
+    except Exception as e:
+        print("\nError deleting pay period: ", e)
+
+
 def calculate_payperiod_earnings(payperiod_obj):
     regular_hours = 0
     overtime_hours = 0
@@ -74,9 +89,9 @@ def calculate_payperiod_earnings(payperiod_obj):
     overtime_wage = wage * overtime_rate
 
     try:
-        print("\nEnter your wage or hit <enter> to proceed with earnings calculations at minimum wage (${wage})")
+        print(f"\nEnter your wage or hit <enter> to proceed with earnings calculations at minimum wage (${wage})")
         wage_input = input("\n>>> ")
-        if wage_input: wage = wage_input
+        if wage_input: wage = float(wage_input)
 
         for shift in get_shifts(payperiod_obj):
             cc_tips += shift.cc_tip
@@ -88,20 +103,22 @@ def calculate_payperiod_earnings(payperiod_obj):
                 regular_hours += 8
                 overtime_hours += (total_hours_worked - 8)
     except Exception as e:
-        print("Error calculating pay period wages: ", e)
-            
-    print("\nHere are the pay period details for the selected pay period:")
-    print("***************************************************************************")
-    print(f'Pay Period: {format_payperiod(payperiod_obj)}')
+        print("Error calculating pay period earnings from shifts: ", e)
+    try:        
+        print("\nHere are the pay period details for the selected pay period:")
+        print("***************************************************************************")
+        print(f'Pay Period: {format_payperiod(payperiod_obj)}')
 
-    print(f'\nEarnings               rate           hours/units            this period')
-    print(f'Regular:               {wage}              {round(regular_hours,2)}                   {round(wage * regular_hours,2)}')
-    print(f'Overtime:              {overtime_wage}             {round(overtime_hours,2)}                     {round(overtime_wage * overtime_hours, 2)}')
-    print(f'Credit card tips owed:                   0.00                    {round(cc_tips, 2)}')
-    print(f'\n                        Gross Pay                              ${round((wage*regular_hours)+(overtime_wage*overtime_hours)+cc_tips,2)}')
-    print(f'                      + Cash tips paid out.....................${cash_tips}')
-    print("\n***************************************************************************")
-
+        print(f'\nEarnings               rate           hours/units            this period')
+        print(f'Regular:               {wage}              {round(regular_hours,2)}                   {round(wage * regular_hours,2)}')
+        print(f'Overtime:              {overtime_wage}             {round(overtime_hours,2)}                     {round(overtime_wage * overtime_hours, 2)}')
+        print(f'Credit card tips owed:                   0.00                    {round(cc_tips, 2)}')
+        print(f'\n                        Gross Pay                              ${round((wage*regular_hours)+(overtime_wage*overtime_hours)+cc_tips,2)}')
+        print(f'                      + Cash tips paid out.....................${cash_tips}')
+        print("\n***************************************************************************")
+    except Exception as e:
+        print("Error calculating pay period earnings: ", e)
+        print("Make sure wage is a number with no more than two decimal places.")
         
 def format_shift(shift):
     return f'{shift._month}/{shift._day}/{shift._year} | Hours: {hours_worked(shift)} hours | Tips: ${shift._cc_tip + shift._cash_tip}'

@@ -6,6 +6,7 @@ from helpers import (
     enumerate_payperiods,
     create_payperiod,
     update_payperiod,
+    delete_payperiod,
     calculate_payperiod_earnings,
     get_shifts,
     enumerate_shifts,
@@ -74,6 +75,7 @@ def show_shifts_menu(selected_payperiod):
         print("Type A or a to ADD a new shift to this pay period")
         print("Type U or u to UPDATE this pay period's dates")
         print("Type C or c to CALCULATE this pay period's total hours/earnings")
+        print("Type D or d to DELETE this pay period and ALL shifts associated with it")
         print("Type B or b to go BACK to previous menu")
         print("Type E or e to EXIT the program")
 
@@ -92,9 +94,29 @@ def show_shifts_menu(selected_payperiod):
             update_payperiod(selected_payperiod)
         elif choice == 'c':
             calculate_payperiod_earnings(selected_payperiod)
+        elif choice == 'd':
+            delete_payperiod_menu(selected_payperiod)
+            choice = 'b'
         elif choice == 'e':
             exit_program()
         elif choice != 'b':
+            print("\nInvalid choice, please try again.")
+
+def delete_payperiod_menu(selected_payperiod):
+    choice = ''
+
+    while choice != 'n':
+        print("\n*** WARNING: Deleting pay period cannot be undone ***")
+        print("\nAre you sure you want to delete this pay period and ALL its associated shifts?")
+        print("\nType Y or y for Yes")
+        print("Type N or n for No")
+
+        choice = input("\n>>> ").strip().lower()
+
+        if choice == 'y':
+            delete_payperiod(selected_payperiod)
+            choice = 'n'
+        elif choice != 'n':
             print("\nInvalid choice, please try again.")
 
 def selected_shift_menu(selected_shift):
