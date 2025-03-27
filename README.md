@@ -153,7 +153,7 @@ This file initializes the SQLite database connection used across the app.
 Connects to (or creates) a local SQLite database file called `earnings.db`.
 
 `CONN` and `CURSOR`
-These are globally accessible objects used to execute raw SQL statements throughout the program, such as creating tables or running queries when SQLAlchemy is not used.
+These are globally accessible objects used to execute raw SQL statements throughout the program, such as creating tables or running queries.
 
 This setup allows the CLI and helper functions to interact with the database directly using SQL commands. While some parts of the app use an ORM-like structure, this file keeps the core connection simple and direct using Python’s built-in `sqlite3` module.
 
