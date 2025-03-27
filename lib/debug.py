@@ -10,7 +10,7 @@ from models.shift import Shift
 #     Shift.drop_table()
 #     Shift.create_table()
 
-#     #Create seed data
+#     #Creates seed data
 #     novemberfirst = PayPeriod.create(10,14,2024,10,27,2024)
 #     novembersecond = PayPeriod.create(10,28,2024,11,10,2024)
 #     Shift.create(10,14,2024,"11:32","18:48",139.36,0, novemberfirst.id)
@@ -20,4 +20,4 @@ from models.shift import Shift
 
 # reset_database()
 
-# breakpoint()
+breakpoint()

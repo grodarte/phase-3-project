@@ -1,7 +1,5 @@
 from models.__init__ import CURSOR, CONN
 from models.payperiod import PayPeriod
-# from datetime import datetime, date
-# from decimal import Decimal
 
 class Shift:
 

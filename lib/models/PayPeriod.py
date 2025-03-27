@@ -1,6 +1,4 @@
 from models.__init__ import CURSOR, CONN
-# from datetime import datetime, date
-
 
 class PayPeriod:
     

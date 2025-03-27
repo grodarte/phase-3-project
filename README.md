@@ -1,172 +1,189 @@
-# Phase 3 CLI+ORM Project Template
+# Personal Earnings Tracker (Phase 3 Project)
 
-## Learning Goals
+## Overview
 
-- Discuss the basic directory structure of a CLI.
-- Outline the first steps in building a CLI.
-
----
-
-## Introduction
-
-You now have a basic idea of what constitutes a CLI. Fork and clone this lesson
-for a project template for your CLI.
-
-Take a look at the directory structure:
-
-```console
-.
-├── Pipfile
-├── Pipfile.lock
-├── README.md
-└── lib
-    ├── models
-    │   ├── __init__.py
-    │   └── model_1.py
-    ├── cli.py
-    ├── debug.py
-    └── helpers.py
-```
-
-Note: The directory also includes two files named `CONTRIBUTING.md` and
-`LICENSE.md` that are specific to Flatiron's curriculum. You can disregard or
-delete the files if you want.
+This is a command-line application that helps shift workers like servers or bartenders track hours worked, tips earned, and pay over time. The app uses a local SQLite database. Users interact with the database entirely via a custom CLI interface that supports viewing, creating, updating, and deleting shift records and pay periods.
 
 ---
 
-## Generating Your Environment
+## `cli.py` – The Command-Line Interface
 
-You might have noticed in the file structure- there's already a Pipfile!
+This file contains the core user experience of the app. When run, it prompts the user to select actions like:
 
-Install any additional dependencies you know you'll need for your project by
-adding them to the `Pipfile`. Then run the commands:
+- **Add a Shift:** Record clock-in and clock-out times, tip amounts, and assign to the selected pay period.
+- **View Shifts by Pay Period:** Select a pay period to view all related shifts.
+- **Edit a Shift:** Update an existing record’s times, or tips.
+- **Delete a Shift:** Remove a shift from the database.
+- **Create/Delete/Update Pay Periods:** Manage pay periods independently.
+- **View Pay Period Summaries:** View earnings per period such as total tips, hourly and overtime wages, and expected gross pay.
 
-```console
-pipenv install
-pipenv shell
-```
-
----
-
-## Generating Your CLI
-
-A CLI is, simply put, an interactive script and prompts the user and performs
-operations based on user input.
-
-The project template has a sample CLI in `lib/cli.py` that looks like this:
-
-```py
-# lib/cli.py
-
-from helpers import (
-    exit_program,
-    helper_1
-)
-
-
-def main():
-    while True:
-        menu()
-        choice = input("> ")
-        if choice == "0":
-            exit_program()
-        elif choice == "1":
-            helper_1()
-        else:
-            print("Invalid choice")
-
-
-def menu():
-    print("Please select an option:")
-    print("0. Exit the program")
-    print("1. Some useful function")
-
-
-if __name__ == "__main__":
-    main()
-```
-
-The helper functions are located in `lib/helpers.py`:
-
-```py
-# lib/helpers.py
-
-def helper_1():
-    print("Performing useful function#1.")
-
-
-def exit_program():
-    print("Goodbye!")
-    exit()
-```
-
-You can run the template CLI with `python lib/cli.py`, or include the shebang
-and make it executable with `chmod +x`. The template CLI will ask for input, do
-some work, and accomplish some sort of task.
-
-Past that, CLIs can be whatever you'd like, as long as you follow the project
-requirements.
-
-Of course, you will update `lib/cli.py` with prompts that are appropriate for
-your application, and you will update `lib/helpers.py` to replace `helper_1()`
-with a useful function based on the specific problem domain you decide to
-implement, along with adding other helper functions to the module.
-
-In the `lib/models` folder, you should rename `model_1.py` with the name of a
-data model class from your specific problem domain, and add other classes to the
-folder as needed. The file `lib/models/__init__.py` has been initialized to
-create the necessary database constants. You need to add import statements to
-the various data model classes in order to use the database constants.
-
-You are also welcome to implement a different module and directory structure.
-However, your project should be well organized, modular, and follow the design
-principal of separation of concerns, which means you should separate code
-related to:
-
-- User interface
-- Data persistence
-- Problem domain rules and logic
+The CLI guides users with prompts, input validation, and clear feedback. It acts as the app’s main navigation layer and is the entry point of the program.
 
 ---
 
-## Updating README.md
+## `helpers.py` – CLI Utility Functions
 
-`README.md` is a Markdown file that should describe your project. You will
-replace the contents of this `README.md` file with a description of **your**
-actual project.
+This file contains all the support functions that keep the CLI clean and readable. It handles all input prompts, data formatting, and helper logic. Notable functions include:
 
-Markdown is not a language that we cover in Flatiron's Software Engineering
-curriculum, but it's not a particularly difficult language to learn (if you've
-ever left a comment on Reddit, you might already know the basics). Refer to the
-cheat sheet in this assignments's resources for a basic guide to Markdown.
+### Pay Period Helpers
+* `get_payperiods()` fetches all existing pay periods from the database.
 
-### What Goes into a README?
+* `enumerate_payperiods()` displays a numbered list of all pay periods with readable dates to help the user choose one.
 
-This README serves as a template. Replace the contents of this file to describe
-the important files in your project and describe what they do. Each Python file
-that you edit should get at least a paragraph, and each function should be
-described with a sentence or two.
+* `create_payperiod()` prompts the user for a start and end date (month, day, year) and creates a new pay period entry.
 
-Describe your actual CLI script first, and with a good level of detail. The rest
-should be ordered by importance to the user. (Probably functions next, then
-models.)
+* `update_payperiod()` allows the user to select a pay period and update its dates.
 
-Screenshots and links to resources that you used throughout are also useful to
-users and collaborators, but a little more syntactically complicated. Only add
-these in if you're feeling comfortable with Markdown.
+* `delete_payperiod()` allows the user to select a pay period and delete it from the database after confirmation, along with any shifts associated with that pay period.
 
----
+* `calculate_payperiod_earnings(pay_period)` computes and prints a summary of total tips, hours worked, hourly and overtime wages, and expected gross pay for a given pay period.
 
-## Conclusion
+### Shift Helpers
+* `get_shifts()` retrieves all shifts from the database, sorted by pay period.
 
-A lot of work goes into a good CLI, but it all relies on concepts that you've
-practiced quite a bit by now. Hopefully this template and guide will get you off
-to a good start with your Phase 3 Project.
+* `enumerate_shifts(shifts)` displays a numbered list of shift dates for the user to browse or select from.
 
-Happy coding!
+* `display_shift_details(shift)` prints detailed information for a single shift, including date, hours worked, and tip amount.
+
+* `create_shift()` guides the user through entering a new shift: clock-in/out time, tip amount, and assigning it to a pay period.
+
+* `update_shift()` lets the user select and modify an existing shift's date, time, and tips.
+
+* `delete_shift()` deletes a selected shift from the database after confirmation.
+
+This file helps separate interface logic from the main CLI flow and keeps `cli.py` focused on structure rather than input/output logic.
 
 ---
 
-## Resources
+## `models/payperiod.py` – The `PayPeriod` Model
 
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
+This file defines the `PayPeriod` class, which models a single earnings period with a defined start and end date. Each instance is stored in a local dictionary and persisted in a SQLite database. It is linked to multiple `Shift` instances via a foreign key relationship, enabling the user to analyze and group shifts across date ranges. Like `Shift`, this class includes property setters that enforce valid date inputs and prevent malformed data from entering the system.
+
+### Attributes:
+- `id` – Unique identifier (primary key).
+- `smonth`, `sday`, `syear` – Start date (month, day, year).
+- `emonth`, `eday`, `eyear` – End date (month, day, year).
+
+### Properties:
+Each date component (e.g., `smonth`, `eday`, etc.) includes a property with validation logic that ensures input values are within acceptable ranges. For example, years must be between 2000–2026, and months must be 1–12.
+
+### Methods:
+
+#### Database Management
+- **`create_table()`** – Creates the `payperiods` table in the database with columns for start and end date values.
+- **`drop_table()`** – Deletes the `payperiods` table entirely.
+- **`save()`** – Inserts the current pay period into the database and assigns its `id`.
+- **`create()`** – Class method that initializes and saves a new `PayPeriod` instance in one step.
+- **`update()`** – Updates the table row for the current instance with any new start/end date changes.
+- **`delete()`** – Deletes the row corresponding to the instance and removes it from the class-level dictionary.
+
+#### Record Access
+- **`instance_from_db(row)`** – Returns a `PayPeriod` instance from a database row. If the instance already exists in memory, it returns the existing object instead of creating a new one.
+- **`get_all()`** – Retrieves and returns a list of all pay periods in the database.
+- **`find_by_id(id)`** – Looks up a pay period by its `id` and returns the corresponding instance, or `None` if not found.
+
+#### Relationship to Shifts
+- **`shifts()`** – Returns all `Shift` instances from the database that are associated with this pay period (via `payperiod_id`). This supports earnings summaries and grouping logic in the CLI.
+
+The `PayPeriod` class is an essential part of the data model, acting as the organizing unit for all shifts and enabling historical earnings tracking by date range. It plays a key role in filtering and summarizing data throughout the app.
+
+---
+
+## `models/shift.py` – The Shift Model
+This file defines the Shift class, which represents a single work shift in the database. Each shift includes the date, clock-in and clock-out times, credit card and cash tips, and a foreign key linking it to a pay period. The class includes custom validation logic through Python properties and uses SQLite for data persistence. It also stores all instances in a class-level dictionary (Shift.all) keyed by their database ID for quick access and lookup.
+
+### Attributes:
+* `id` – Unique identifier for the shift (automatically assigned).
+
+* `month`, `day`, `year` – Components of the shift date.
+
+* `clock_in`, `clock_out` – Time strings in "HH:MM" 24-hour format.
+
+* `cc_tip`, `cash_tip` – Tip amounts from credit card and cash, respectively.
+
+* `payperiod_id` – Links the shift to a specific pay period.
+
+### Methods:
+#### Initialization and Validation
+* `__init__` – Initializes a Shift instance with full validation of dates, times, and tip amounts.
+
+* `_validate_time(time_str)` – Ensures that time strings follow "HH:MM" 24-hour format.
+
+* `_validate_tip(tip)` – Ensures that tips are non-negative floats rounded to two decimal places.
+
+* Properties for `month`, `day`, `year`, `clock_in`, `clock_out`, `cc_tip`, `cash_tip`, and `payperiod_id` – Each has a custom setter that validates inputs and raises errors for incorrect formats or values.
+
+#### Database Interaction
+* `create_table()` – Creates the `shifts` table if it doesn’t already exist, with columns for date, time, tips, and pay period association.
+
+* `drop_table()` – Deletes the `shifts` table from the database.
+
+* `save()` – Inserts a new shift into the database and stores the instance in the `Shift.all` dictionary.
+
+* `create()` – Class method to create and immediately save a new `Shift` instance.
+
+* `update()` – Updates the corresponding database row with the instance’s current attribute values.
+
+* `delete()` – Removes the shift from both the database and the in-memory `Shift.all` dictionary.
+
+#### Fetching and Finding
+* `get_all()` – Returns a list of all shift instances from the database.
+
+* `find_by_id(id)` – Returns the shift instance with the matching `id`, or `None` if not found.
+
+* `instance_from_db(row)` – Internal method that converts a database row into a Shift instance, avoiding duplicate objects by checking the Shift.all dictionary first.
+
+This class is a foundational part of the app. It not only holds detailed data for every work shift, but also performs input validation, manages database persistence, and powers the calculations used in CLI summaries.
+
+---
+
+## `debug.py` – Development and Testing Setup
+
+This script is used for seeding the database with test data and interactively debugging the app during development. It imports the app, opens a database session, and pre-populates tables with sample shifts and pay periods so features can be tested without entering data manually every time.
+
+Not required for the user, but helpful for developers during testing.
+
+---
+
+## `models/__init__.py` – ORM Setup and Models
+
+This file initializes the SQLite database connection used across the app.
+
+`sqlite3.connect('earnings.db')`
+Connects to (or creates) a local SQLite database file called `earnings.db`.
+
+`CONN` and `CURSOR`
+These are globally accessible objects used to execute raw SQL statements throughout the program, such as creating tables or running queries when SQLAlchemy is not used.
+
+This setup allows the CLI and helper functions to interact with the database directly using SQL commands. While some parts of the app use an ORM-like structure, this file keeps the core connection simple and direct using Python’s built-in `sqlite3` module.
+
+---
+
+## Summary
+
+This project is a fully functional CLI application for tracking personal earnings over time. It is built using Python and SQLite, with a focus on:
+
+- Clean, modular code separated across multiple files
+- Robust input validation to prevent errors and maintain data integrity
+- Persistent storage via a relational database
+- A user-friendly interface with clear prompts and summaries
+- A one-to-many relationship between `PayPeriod` and `Shift`, modeled using foreign keys
+
+The CLI allows users to manage shifts and pay periods, analyze tips and hours worked, and correct mistakes by editing or deleting entries. All logic is abstracted into helper functions and model methods to keep the application organized and extensible.
+
+This app is useful for service industry workers (like servers or bartenders) to gain insight into their pay patterns and track progress over time.
+
+---
+
+## Future Improvements
+* Export data to CSV
+
+* Add analytics like best earning days/hours
+
+* Implement user authentication for multiple users
+
+---
+
+## Author
+
+Gabrielle Rodarte – [grodarte](https://github.com/grodarte)

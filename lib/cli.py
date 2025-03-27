@@ -20,7 +20,7 @@ def main_menu():
     choice = ''
 
     while choice != 'e':
-        print("*** PERSONAL EARNINGS MANAGER ***")
+        print("\n*** PERSONAL EARNINGS MANAGER ***")
         print('''\nPlease choose from the following: ''')
         print("\nType P or p to view the PAY PERIODS")
         print("OR type E or e to EXIT")

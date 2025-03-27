@@ -15,13 +15,13 @@ def get_payperiods():
 
 def enumerate_payperiods(payperiods):
     print("\nPAY PERIODS:")
-    print("**************************")
+    print("***************************")
     if payperiods:
         for i, payperiod in enumerate(payperiods, start=1):
             print(f'{i}. {format_payperiod(payperiod)}')
     else:
         print("\nNo pay periods recorded.")
-    print("\n**************************")
+    print("\n***************************")
 
 
 def create_payperiod():
@@ -91,16 +91,16 @@ def calculate_payperiod_earnings(payperiod_obj):
         print("Error calculating pay period wages: ", e)
             
     print("\nHere are the pay period details for the selected pay period:")
-    print("***********************************************************************************")
+    print("***************************************************************************")
     print(f'Pay Period: {format_payperiod(payperiod_obj)}')
 
     print(f'\nEarnings               rate           hours/units            this period')
-    print(f'Regular:               {wage}                {round(regular_hours,2)}                      {round(wage * regular_hours,2)}')
-    print(f'Overtime:              {overtime_wage}              {round(overtime_hours,2)}                    {round(overtime_wage * overtime_hours, 2)}')
+    print(f'Regular:               {wage}              {round(regular_hours,2)}                   {round(wage * regular_hours,2)}')
+    print(f'Overtime:              {overtime_wage}             {round(overtime_hours,2)}                     {round(overtime_wage * overtime_hours, 2)}')
     print(f'Credit card tips owed:                   0.00                    {round(cc_tips, 2)}')
     print(f'\n                        Gross Pay                              ${round((wage*regular_hours)+(overtime_wage*overtime_hours)+cc_tips,2)}')
     print(f'                      + Cash tips paid out.....................${cash_tips}')
-    print("\n***********************************************************************************")
+    print("\n***************************************************************************")
 
         
 def format_shift(shift):
@@ -112,13 +112,13 @@ def get_shifts(payperiod_obj):
 
 def enumerate_shifts(selected_payperiod, shifts):
     print(f'\nShifts in Pay Period: {format_payperiod(selected_payperiod)}')
-    print("**************************")
+    print("*************************************************")
     if shifts:
         for i, shift in enumerate(shifts, start=1):
             print(f'{i}. {format_shift(shift)}')
     else:
         print("\nNo shifts recorded.")
-    print("\n**************************")    
+    print("\n*************************************************")    
 
 def display_shift_details(shift_obj):
     print(f'\nSHIFT DETAILS ON: {shift_obj._month}/{shift_obj._day}/{shift_obj._year}')
@@ -142,7 +142,9 @@ def create_shift(payperiod_id):
     clock_out = input("Enter clock-out time: ")
     print("\nTips (Tip must be a 0 or positive number with up to two decimals):")
     cc_tip = input("Enter credit card tips earned: $")
+    if not cc_tip: cc_tip = 0
     cash_tip = input("Enter cash tips earned: $")
+    if not cash_tip: cash_tip = 0
 
     try:
         shift = Shift.create(int(month), int(day), int(year), clock_in, clock_out, float(cc_tip), float(cash_tip), payperiod_id)
